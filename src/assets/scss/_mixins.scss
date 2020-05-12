@@ -1,2 +1,16 @@
 @charset "UTF-8";
 @import "constant";
+
+@mixin container {
+  width: 1000px !important;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 !important;
+}
+
+@mixin containerFluid {
+  width: 100%;
+  padding: 0 !important;
+  margin: 0 !important;
+}

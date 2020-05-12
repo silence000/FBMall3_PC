@@ -2,9 +2,9 @@
   <div>
     <TopNav></TopNav>
     <HeaderNav></HeaderNav>
-    <MenuNav></MenuNav>
-    <SlideShow></SlideShow>
-    <RecommendList></RecommendList>
+    <BannerAd></BannerAd>
+    <ProductFilter></ProductFilter>
+    <SortContent></SortContent>
     <FooterNav></FooterNav>
   </div>
 </template>
@@ -14,20 +14,19 @@ import TopNav from '../../components/topNav';
 // eslint-disable-next-line import/extensions
 import HeaderNav from '../../components/headerNav';
 // eslint-disable-next-line import/extensions
-import MenuNav from '../../components/menuNav';
+import BannerAd from '../../components/bannerAd';
 // eslint-disable-next-line import/extensions
-import SlideShow from '../../components/slideShow';
+import ProductFilter from '../../components/productFilter';
 // eslint-disable-next-line import/extensions
-import RecommendList from '../../components/recommendList';
+import SortContent from '../../components/sortContent';
 // eslint-disable-next-line import/extensions
 import FooterNav from '../../components/footerNav';
 
 export default {
   components: {
-    TopNav, HeaderNav, MenuNav, SlideShow, RecommendList, FooterNav,
+    TopNav, HeaderNav, BannerAd, ProductFilter, SortContent, FooterNav,
   },
-  mounted() {
-  },
+  mounted() {},
   data() {
     return {};
   },
