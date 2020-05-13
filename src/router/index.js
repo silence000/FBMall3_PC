@@ -23,6 +23,21 @@ const routes = [
     name: 'Product',
     component: () => import('../views/product'),
   },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/register'),
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/login'),
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../views/sort'),
+  },
 ];
 
 const router = new VueRouter({

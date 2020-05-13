@@ -16,6 +16,14 @@
           ></el-image>
           <div class="recommendContent__title" v-text=item.title></div>
           <div class="recommendContent__price" v-text="item.price"></div>
+          <div class="recommendContent__extra">
+            <div class="recommendContent__extra--sales">
+              月成交&nbsp;<span v-text="item.sales"></span>
+            </div>
+            <div class="recommendContent__extra--reviews">
+              评价&nbsp;<span v-text="item.reviews"></span>
+            </div>
+          </div>
         </el-card>
       </div>
     </div>
@@ -34,42 +42,56 @@ export default {
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
         {
           id: '2',
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
         {
           id: '3',
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
         {
           id: '4',
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
         {
           id: '5',
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
         {
           id: '6',
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
         {
           id: '7',
           imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
           title: '[热销]夏普屏PANDA/熊猫LE39D71S',
           price: '¥ 1234.56',
+          sales: '8791',
+          reviews: '335',
         },
       ],
     };
@@ -85,7 +107,9 @@ export default {
   @import "../assets/scss/mixins";
   // 变量定义
   $recommend__title-color: #646464;
+  $border-color: #EBEEF5;
   $price--color: #FF003A;
+  $reviews--color: #3388BB;
   // Scss样式
   .containerFluid {
     @include containerFluid;
@@ -122,6 +146,34 @@ export default {
       padding: 0 0 10px 10px;
       font-size: 16px;
       color: $price--color;
+    }
+
+    &__extra {
+      overflow: hidden;
+      font-size: 12px;
+      color: $color-text-regular;
+      border-top: 1px solid $border-color;
+      padding: 10px 5px;
+
+      &--sales {
+        float: left;
+        margin-left: 5px;
+
+        span {
+          color: $color-primary;
+          font-weight: 700;
+        }
+      }
+
+      &--reviews {
+        float: right;
+        margin-right: 5px;
+
+        span {
+          color: $reviews--color;
+          font-weight: 700;
+        }
+      }
     }
   }
 </style>

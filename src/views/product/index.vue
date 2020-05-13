@@ -5,6 +5,7 @@
     <BannerAd></BannerAd>
     <ProductDetails></ProductDetails>
     <ProductExtra></ProductExtra>
+    <FooterNav></FooterNav>
   </div>
 </template>
 <script>
@@ -18,10 +19,12 @@ import BannerAd from '../../components/bannerAd';
 import ProductDetails from '../../components/productDetails';
 // eslint-disable-next-line import/extensions
 import ProductExtra from '../../components/productExtra';
+// eslint-disable-next-line import/extensions
+import FooterNav from '../../components/footerNav';
 
 export default {
   components: {
-    TopNav, HeaderNav, BannerAd, ProductDetails, ProductExtra,
+    TopNav, HeaderNav, BannerAd, ProductDetails, ProductExtra, FooterNav,
   },
   mounted() {},
   data() {

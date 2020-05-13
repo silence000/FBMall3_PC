@@ -85,7 +85,12 @@
         </div>
 
         <div class="productInfo__ButtonGroup">
-          <el-button type="primary" plain class="productInfo__ButtonGroup--plain">立即购买</el-button>
+          <el-button
+            type="primary"
+            plain
+            class="productInfo__ButtonGroup--plain"
+            @click="onClickBuy"
+          >立即购买</el-button>
           <el-button type="primary" class="productInfo__ButtonGroup--normal">
             <i class="fa fa-shopping-cart topNavContent__icon" aria-hidden="true"></i> 加入购物车
           </el-button>
@@ -106,7 +111,11 @@ export default {
       num: '1',
     };
   },
-  methods: {},
+  methods: {
+    onClickBuy() {
+      console.log('点击了购买');
+    },
+  },
   computed: {},
   watch: {},
 };
