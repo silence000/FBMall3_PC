@@ -1,22 +1,10 @@
 <template>
   <div>
     <TopNav></TopNav>
+    <Logo></Logo>
 
     <div class="containerFluid">
       <div class="container">
-        <div class="headerNav">
-          <el-row>
-            <el-col :span="7">
-              <br>
-              <el-image
-                style="width: 190px; height: 27px"
-                :src="logoUrl"
-                fit="fill"
-                class="headerNav__image"
-              ></el-image>
-            </el-col>
-          </el-row>
-        </div>
 
         <div class="containerFluid">
           <div class="container login">
@@ -71,14 +59,13 @@
   </div>
 </template>
 <script>
-// eslint-disable-next-line import/extensions
-import TopNav from '../../components/topNav';
-// eslint-disable-next-line import/extensions
-import FooterNav from '../../components/footerNav';
+import TopNav from '../../components/topNav.vue';
+import FooterNav from '../../components/footerNav.vue';
+import Logo from '../../components/logo.vue';
 
 export default {
   components: {
-    TopNav, FooterNav,
+    TopNav, FooterNav, Logo,
   },
   mounted() {},
   data() {
@@ -106,10 +93,6 @@ export default {
 
   .container {
     @include container;
-  }
-
-  .headerNav {
-    height: 70px;
   }
 
   .login {

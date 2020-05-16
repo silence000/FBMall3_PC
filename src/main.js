@@ -6,8 +6,7 @@ import router from './router';
 import store from './store';
 
 // ElementUI框架
-// eslint-disable-next-line import/extensions
-import './plugins/element.js';
+import './plugins/element';
 import 'element-ui/lib/theme-chalk/index.css';
 // ElementUI主题
 import './assets/plugin/elementUI_theme/index.css';

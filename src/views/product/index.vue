@@ -9,18 +9,12 @@
   </div>
 </template>
 <script>
-// eslint-disable-next-line import/extensions
-import TopNav from '../../components/topNav';
-// eslint-disable-next-line import/extensions
-import HeaderNav from '../../components/headerNav';
-// eslint-disable-next-line import/extensions
-import BannerAd from '../../components/bannerAd';
-// eslint-disable-next-line import/extensions
-import ProductDetails from '../../components/productDetails';
-// eslint-disable-next-line import/extensions
-import ProductExtra from '../../components/productExtra';
-// eslint-disable-next-line import/extensions
-import FooterNav from '../../components/footerNav';
+import TopNav from '../../components/topNav.vue';
+import HeaderNav from '../../components/headerNav.vue';
+import BannerAd from '../../components/bannerAd.vue';
+import ProductDetails from '../../components/productDetails.vue';
+import ProductExtra from '../../components/productExtra.vue';
+import FooterNav from '../../components/footerNav.vue';
 
 export default {
   components: {

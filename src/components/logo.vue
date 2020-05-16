@@ -1,21 +1,30 @@
 <template>
   <div class="containerFluid">
     <div class="container">
-      <el-image
-        :src="imgUrl"
-        fit="fill"
-      ></el-image>
+      <div class="headerNav">
+        <el-row>
+          <el-col :span="7">
+            <br>
+            <el-image
+              style="width: 190px; height: 27px"
+              :src="logoUrl"
+              fit="fill"
+              class="headerNav__image"
+            ></el-image>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: 'bannerAd',
+  name: 'logo',
   components: {},
   mounted() {},
   data() {
     return {
-      imgUrl: `${this.$store.state.ImagesServerURL}img/category/83.jpg`,
+      logoUrl: `${this.$store.state.ImagesServerURL}img/site/simpleLogo.png`,
     };
   },
   methods: {},
@@ -34,6 +43,9 @@ export default {
 
   .container {
     @include container;
-    height: 140px;
+  }
+
+  .headerNav {
+    height: 70px;
   }
 </style>
