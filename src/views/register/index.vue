@@ -124,17 +124,17 @@ export default {
 
       this.$store.dispatch('registerLogin/onSubmit')
         .then((data) => {
-          if (typeof (data) !== 'undefined') {
-            if (data.code === 1) {
-              this.$message.success(`${data.msg}`);
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 1500);
-            } else {
-              this.username = '';
-              this.$message.error(`注册失败：${data.msg}`);
-            }
-          } else {
+          if (data.code === 1) {
+            this.$message.success(`${data.msg}`);
+            setTimeout(() => {
+              this.$router.push('/login');
+            }, 1500);
+          }
+          if (typeof (data.code) !== 'undefined') {
+            this.username = '';
+            this.$message.error(`注册失败：${data.msg}`);
+          }
+          if (data === 'no_response') {
             this.$message.error('注册失败：服务器内部错误或请求超时');
           }
         });

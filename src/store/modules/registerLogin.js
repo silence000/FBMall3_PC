@@ -52,16 +52,27 @@ export default {
 
   actions: { // 用于触发事件, 执行异步操作, 触发mutations, 去更新state
     async onSubmit({ commit, state }) {
+      let response = '';
       commit(alterLoading, true);
       const params = new URLSearchParams();
       params.append('username', state.username);
       params.append('userpass', state.userpass);
-      const { data } = await insertUser(params);
+      const { data, error } = await insertUser(params);
+      if (typeof (data) !== 'undefined') {
+        response = data;
+      }
+      if (typeof (error) !== 'undefined') {
+        response = error;
+      }
+      if (typeof (data) === 'undefined' && typeof (error) === 'undefined') {
+        response = 'no_response';
+      }
       commit(alterLoading, false);
-      return data;
+      return response;
     },
 
     async onLogin({ commit, state, rootState }) {
+      let response = '';
       commit(alterLoading, true);
       const params = new URLSearchParams();
       params.append('client_id', rootState.clientId);
@@ -69,18 +80,24 @@ export default {
       params.append('username', state.username);
       params.append('password', state.userpass);
       params.append('grant_type', 'password');
-      const { data } = await login(params);
+      const { data, error } = await login(params);
       if (typeof (data) !== 'undefined') {
         if (typeof (data.access_token) !== 'undefined') {
           commit(alterAccessToken, data.access_token, { root: true });
           commit(alterRefreshToken, data.refresh_token, { root: true });
           commit(alterUsername, state.username, { root: true });
           commit(alterLoading, false);
-          return true;
+          response = 'success';
         }
       }
+      if (typeof (error) !== 'undefined') {
+        response = error;
+      }
+      if (typeof (data) === 'undefined' && typeof (error) === 'undefined') {
+        response = 'no_response';
+      }
       commit(alterLoading, false);
-      return false;
+      return response;
     },
 
     onSubmit2({ commit }, payload) { // todo 保留数据

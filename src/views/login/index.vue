@@ -115,13 +115,24 @@ export default {
 
       this.$store.dispatch('registerLogin/onLogin')
         .then((data) => {
-          if (data === true) {
+          if (data === 'success') {
             this.$message.success('登录成功');
             setTimeout(() => {
               this.$router.push('/main');
             }, 1500);
           } else {
-            this.$message.error('登录失败：用户名或密码错误');
+            if (data === 'unauthorized') {
+              this.$message.error('登录失败：账号不存在');
+              this.username = '';
+              this.userpass = '';
+            }
+            if (data === 'invalid_grant') {
+              this.$message.error('登录失败：密码错误');
+              this.userpass = '';
+            }
+            if (data === 'no_response') {
+              this.$message.error('登录失败：服务器内部错误或请求超时');
+            }
           }
         });
     },

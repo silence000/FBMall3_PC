@@ -43,6 +43,7 @@ export default {
     },
 
     clear() {
+      this.$store.commit('alterUsername', '');
       sessionStorage.clear();
       this.jmp('/login');
     },
@@ -56,12 +57,7 @@ export default {
       },
     },
   },
-  watch: {
-    $route(to, from) {
-      console.log(to);
-      console.log(from);
-    },
-  },
+  watch: {},
 };
 </script>
 <style scoped lang="scss">

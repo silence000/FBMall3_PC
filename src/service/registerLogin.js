@@ -3,7 +3,12 @@ import { ApiURL } from '../store/mutationsType';
 
 export const insertUser = (params) => Vue.axios.post(`${ApiURL}/users/insert/user`, params)
   .then((response) => response)
-  .catch((error) => error);
+  .catch((error) => {
+    if (typeof (error.response) !== 'undefined') {
+      return error.response.data;
+    }
+    return error;
+  });
 
 export const login = (params) => Vue.axios.post(`${ApiURL}/uaa/oauth/token`, params, {
   headers: {
@@ -11,4 +16,9 @@ export const login = (params) => Vue.axios.post(`${ApiURL}/uaa/oauth/token`, par
   },
 })
   .then((response) => response)
-  .catch((error) => error);
+  .catch((error) => {
+    if (typeof (error.response) !== 'undefined') {
+      return error.response.data;
+    }
+    return error;
+  });
