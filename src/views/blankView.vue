@@ -8,9 +8,9 @@ export default {
   data() {
     return {};
   },
-  methods: {},
   computed: {},
   watch: {},
+  methods: {},
 };
 </script>
 <style scoped lang="scss"></style>

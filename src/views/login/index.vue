@@ -10,11 +10,11 @@
           <div class="container login">
             <el-image
               class="loginBg"
-              :src="loginImageUrl"
+              :src=loginImageUrl
             ></el-image>
 
             <div class="loginMain--position"></div>
-            <div class="loginMain">
+            <div class="loginMain" v-loading="loading">
               <div class="loginMain__title">账户登录</div>
               <el-input
                 class="loginMain__input"
@@ -43,11 +43,11 @@
                   <el-link :underline="false">忘记登录密码</el-link>
                 </div>
                 <div class="loginExtra__right">
-                  <el-link :underline="false">免费注册</el-link>
+                  <el-link :underline="false" @click="jmp('/register')">免费注册</el-link>
                 </div>
               </div>
               <div class="loginButton">
-                <el-button type="primary">登录</el-button>
+                <el-button type="primary" @click="onLogin">登录</el-button>
               </div>
             </div>
           </div>
@@ -59,6 +59,7 @@
   </div>
 </template>
 <script>
+import SwitchRouter from '../../assets/js/SwitchRouter';
 import TopNav from '../../components/topNav.vue';
 import FooterNav from '../../components/footerNav.vue';
 import Logo from '../../components/logo.vue';
@@ -70,15 +71,62 @@ export default {
   mounted() {},
   data() {
     return {
-      logoUrl: `${this.$store.state.ImagesServerURL}img/site/simpleLogo.png`,
       loginImageUrl: `${this.$store.state.ImagesServerURL}img/site/6702.png`,
-      username: '',
-      userpass: '',
     };
   },
-  methods: {},
-  computed: {},
+  computed: {
+    username: {
+      get() {
+        return this.$store.state.registerLogin.username;
+      },
+      set(val) {
+        this.$store.commit('registerLogin/alterUsername', val);
+      },
+    },
+
+    userpass: {
+      get() {
+        return this.$store.state.registerLogin.userpass;
+      },
+      set(val) {
+        this.$store.commit('registerLogin/alterUserpass', val);
+      },
+    },
+
+    loading: {
+      get() {
+        return this.$store.state.registerLogin.loading;
+      },
+    },
+  },
   watch: {},
+  methods: {
+    jmp(val) {
+      SwitchRouter(this.$route.path, val);
+    },
+
+    onLogin() {
+      if (this.username === '' || this.userpass === '') {
+        this.$alert('请填写用户名或密码！', '错误', {
+          confirmButtonText: '确定',
+        });
+        return;
+      }
+
+      this.$store.dispatch('registerLogin/onLogin')
+        .then((data) => {
+          if (data === true) {
+            this.$message.success('登录成功');
+            setTimeout(() => {
+              this.$router.push('/main');
+            }, 1500);
+          } else {
+            this.$message.error('登录失败：用户名或密码错误');
+          }
+        });
+    },
+  },
+
 };
 </script>
 <style scoped lang="scss">
