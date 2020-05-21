@@ -25,12 +25,12 @@
             <div class="recommendsNavSearch">
               <div
                 v-for="item in recommends"
-                :key="item"
+                :key="item.id"
                 class="headerNavSearch__recommends"
               >
                 <el-link
                   :underline="false"
-                  v-text="item">
+                  v-text="item.name">
                 </el-link>
               </div>
             </div>
@@ -42,25 +42,31 @@
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+
 export default {
   name: 'headerNav',
   components: {},
-  mounted() {
-    this.test();
+  created() {
+    this.$store.dispatch('home/getRecommends')
+      .then((data) => {
+        pageResProcess(data);
+      });
   },
+  mounted() {},
   data() {
     return {
       imgUrl: `${this.$store.state.ImagesServerURL}img/site/logo.gif`,
       searchContent: '',
-      recommends: ['平衡车', '扫地机器人', '原汁机', '冰箱'],
     };
   },
-  methods: {
-    test() {
+  computed: {
+    recommends() {
+      return this.$store.state.home.recommends;
     },
   },
-  computed: {},
   watch: {},
+  methods: {},
 };
 </script>
 <style scoped lang="scss">

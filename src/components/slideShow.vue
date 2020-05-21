@@ -1,7 +1,7 @@
 <template>
   <div class="containerFluid">
     <div class="container">
-      <div class="slideShow">
+      <div class="slideShow" @mouseleave="closeSlideMenu">
 
         <el-carousel :interval="5000" arrow="never" height="510px">
           <el-carousel-item v-for="item in imgUrl" :key="item">
@@ -15,15 +15,26 @@
 
         <div class="slideMenu">
           <div class="slideMenuKey">
-            <div class="slideMenuKey__content" v-for="item in slideMenuKey" :key="item">
+            <div
+              class="slideMenuKey__content"
+              v-for="item in slideMenuKey"
+              :key="item.id"
+              @mouseover="showSlideMenu(item.id)">
               <el-link :underline="false">
                 <i class="fa fa-anchor" aria-hidden="true"></i>
-                <span v-text="item"></span>
+                <span v-text="item.name"></span>
               </el-link>
             </div>
           </div>
-          <div class="slideMenuContent">
-<!--            菜单内容-->
+
+          <div class="slideMenuContent" v-show="displayMenu">
+            <div class="slideMenuContent__container">
+              <div class="slideMenuContent__item" v-for="item in slideMenuContent" :key="item.id">
+                <el-link :underline="false">
+                  <span v-text="item.subTitle"></span>
+                </el-link>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -32,10 +43,28 @@
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+
 export default {
   name: 'slideShow',
   components: {},
+  created() {
+    this.$store.dispatch('home/getSlideMenuKey')
+      .then((data) => {
+        pageResProcess(data);
+      });
+  },
   mounted() {},
+  computed: {
+    slideMenuKey() {
+      return this.$store.state.home.slideMenuKey;
+    },
+
+    slideMenuContent() {
+      return this.$store.getters['home/filterSlideMenuContent'];
+    },
+  },
+  watch: {},
   data() {
     return {
       imgUrl: [
@@ -45,30 +74,21 @@ export default {
         `${this.$store.state.ImagesServerURL}img/lunbo/4.jpg`,
         `${this.$store.state.ImagesServerURL}img/lunbo/5.jpg`,
       ],
-      slideMenuKey: [
-        '平板电视',
-        '马桶',
-        '沙发',
-        '电热水器',
-        '平衡车',
-        '扫地机器人',
-        '原汁机',
-        '冰箱',
-        '女表',
-        '男表',
-        '男士手拿包',
-        '男士西装',
-        '时尚男鞋',
-        '品牌女装',
-        '太阳镜',
-        '安全座椅',
-        '哈哈哈哈',
-      ],
+      displayMenu: false,
     };
   },
-  methods: {},
-  computed: {},
-  watch: {},
+  methods: {
+    showSlideMenu(val) {
+      this.$store.dispatch('home/getSlideMenuContent', val)
+        .then((data) => {
+          pageResProcess(data);
+          this.displayMenu = true;
+        });
+    },
+    closeSlideMenu() {
+      this.displayMenu = false;
+    },
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -131,6 +151,20 @@ export default {
   .slideMenuContent {
     float: left;
     width: 800px;
+    height: 510px;
     background-color: $color-white;
+    overflow: hidden;
+
+    &__container {
+      margin: 0 80px;
+    }
+
+    &__item {
+      height: 60px;
+      font-size: 14px;
+      color: $color-text-regular;
+      line-height: 60px;
+      border-bottom: 1px dashed $color-text-placeholder;
+    }
   }
 </style>

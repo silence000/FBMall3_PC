@@ -21,8 +21,11 @@
           </el-link>
         </div>
 
-        <div class="menuNav__normalItem menuNav__content" v-for="item in normalItem" :key="item">
-          <el-link :underline="false" v-text="item"></el-link>
+        <div
+          class="menuNav__normalItem menuNav__content"
+          v-for="item in menuNavItem"
+          :key="item.id">
+          <el-link :underline="false" v-text="item.name" @click="test(item.id)"></el-link>
         </div>
 
       </div>
@@ -30,18 +33,32 @@
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+
 export default {
   name: 'menuNav',
   components: {},
+  created() {
+    this.$store.dispatch('home/getMenuNavItem')
+      .then((data) => {
+        pageResProcess(data);
+      });
+  },
   mounted() {},
   data() {
-    return {
-      normalItem: ['平板电视', '冰箱', '智能手机', '电热水器'],
-    };
+    return {};
   },
-  methods: {},
-  computed: {},
+  computed: {
+    menuNavItem() {
+      return this.$store.state.home.menuNavItem;
+    },
+  },
   watch: {},
+  methods: {
+    test(val) { // todo
+      console.log(val);
+    },
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -78,6 +95,10 @@ export default {
 
       a {
         margin: 0 10px 0 10px;
+
+        &:hover {
+          color: $color-white;
+        }
       }
     }
 

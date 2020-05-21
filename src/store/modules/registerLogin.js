@@ -1,9 +1,16 @@
 import {
-  // eslint-disable-next-line max-len
-  alterUsername, alterUserpass, alterUserpass2, alterLoading, alterResponseData, alterAccessToken, alterRefreshToken,
+  alterUsername,
+  alterUserpass,
+  alterUserpass2,
+  alterLoading,
+  alterResponseData,
+  alterAccessToken,
+  alterRefreshToken,
 } from '../mutationsType';
 
-import { insertUser, login } from '../../service/registerLogin';
+import {
+  insertUser, login,
+} from '../../service/registerLogin';
 
 export default {
   namespaced: true,

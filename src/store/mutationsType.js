@@ -14,3 +14,10 @@ export const alterUserpass = 'alterUserpass';
 export const alterUserpass2 = 'alterUserpass2';
 export const alterResponseData = 'alterResponseData';
 export const alterLoading = 'alterLoading';
+/*
+* home.js
+* */
+export const alterMenuNavItem = 'alterMenuNavItem';
+export const alterSlideMenuKey = 'alterSlideMenuKey';
+export const alterRecommends = 'alterRecommends';
+export const alterSlideMenuContent = 'alterSlideMenuContent';

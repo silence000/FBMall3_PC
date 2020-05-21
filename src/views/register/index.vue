@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import RegxVerify from '../../assets/js/RegxVerify';
+import RegxVerify from '../../assets/util/RegxVerify';
 import TopNav from '../../components/topNav.vue';
 import HeaderNav from '../../components/headerNav.vue';
 import FooterNav from '../../components/footerNav.vue';

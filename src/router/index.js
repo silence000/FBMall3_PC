@@ -6,12 +6,12 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    redirect: '/main',
+    redirect: '/home',
   },
   {
-    path: '/main',
-    name: 'Main',
-    component: () => import('../views/main'),
+    path: '/home',
+    name: 'Home',
+    component: () => import('../views/home'),
   },
   {
     path: '/sort',

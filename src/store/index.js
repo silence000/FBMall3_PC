@@ -6,6 +6,7 @@ import {
 } from './mutationsType';
 // 引入Vuex模块
 import registerLogin from './modules/registerLogin';
+import home from './modules/home';
 
 Vue.use(Vuex);
 
@@ -43,6 +44,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    registerLogin,
+    registerLogin, home,
   },
 });

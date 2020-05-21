@@ -59,7 +59,7 @@
   </div>
 </template>
 <script>
-import SwitchRouter from '../../assets/js/SwitchRouter';
+import SwitchRouter from '../../assets/util/SwitchRouter';
 import TopNav from '../../components/topNav.vue';
 import FooterNav from '../../components/footerNav.vue';
 import Logo from '../../components/logo.vue';
@@ -118,7 +118,7 @@ export default {
           if (data === 'success') {
             this.$message.success('登录成功');
             setTimeout(() => {
-              this.$router.push('/main');
+              this.$router.push('/home');
             }, 1500);
           } else {
             if (data === 'unauthorized') {

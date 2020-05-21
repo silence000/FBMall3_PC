@@ -9,10 +9,12 @@
           </el-link>
           <el-link
             :underline="false"
-            @click="clear"
             class="topNavContent__text--disable">喵，欢迎来到FBMall</el-link>
-          <el-link :underline="false" @click="jmp('/login')" v-text="username"></el-link>
-          <el-link :underline="false" @click="jmp('/register')">免费注册</el-link>
+          <el-link :underline="false" @click="jmp('/login')" v-show="loginState">请登录</el-link>
+          <el-link
+            :underline="false" @click="exit" v-text="username" v-show="reverseLoginState"></el-link>
+          <el-link :underline="false" @click="jmp('/register')"  v-show="loginState">免费注册</el-link>
+          <el-link :underline="false" @click="exit" v-show="reverseLoginState">退出</el-link>
         </div>
 
         <div class="topNavContent topNavContent--right">
@@ -27,7 +29,7 @@
   </div>
 </template>
 <script>
-import SwitchRouter from '../assets/js/SwitchRouter';
+import SwitchRouter from '../assets/util/SwitchRouter';
 
 export default {
   name: 'topNav',
@@ -42,18 +44,28 @@ export default {
       SwitchRouter(this.$route.path, val);
     },
 
-    clear() {
+    exit() {
       this.$store.commit('alterUsername', '');
       sessionStorage.clear();
       this.jmp('/login');
     },
   },
   computed: {
-    username: {
+    loginState: {
       get() {
         const data = this.$store.state.username;
-        if (!data && typeof (data) !== 'undefined' && data !== 0 && data !== '0') return '请登录';
-        return data;
+        return !data && typeof (data) !== 'undefined' && data !== 0 && data !== '0';
+      },
+    },
+    reverseLoginState: {
+      get() {
+        const data = this.$store.state.username;
+        return !(!data && typeof (data) !== 'undefined' && data !== 0 && data !== '0');
+      },
+    },
+    username: {
+      get() {
+        return this.$store.state.username;
       },
     },
   },
