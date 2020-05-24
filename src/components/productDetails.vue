@@ -52,7 +52,9 @@
 
         <div class="productInfo__salesBlock">
           <div class="productInfo__sales">销量&nbsp;<span v-text="productDetails.sales"></span></div>
-          <div class="productInfo__reviews">累计评价&nbsp;<span>337</span></div>
+          <div class="productInfo__reviews">
+            累计评价&nbsp;<span v-text="productReviewsNumber.reviewNumber"></span>
+          </div>
         </div>
 
         <div class="productInfo__numberBlock">
@@ -109,13 +111,18 @@ export default {
       .then((data) => {
         pageResProcess(data);
         // 更改页面标题
-        document.title = this.$store.state.product.productDetails.name;
+        document.title = `FBMall3 - ${this.$store.state.product.productDetails.name}`;
         // 初始化商品展示大图
         const { id } = this.$store.state.product.imageSmallUrl[0];
         setTimeout(() => {
           this.switchImage(id);
           this.loadingImage = false;
         }, 100);
+      });
+
+    this.$store.dispatch('product/getProductReviewsNumber', that.$route.query.id)
+      .then((data) => {
+        pageResProcess(data);
       });
   },
   computed: {
@@ -125,6 +132,10 @@ export default {
 
     imageSmallUrl() {
       return this.$store.getters['product/filterImageSmallUrl'];
+    },
+
+    productReviewsNumber() {
+      return this.$store.state.product.productReviewsNumber;
     },
   },
   watch: {},

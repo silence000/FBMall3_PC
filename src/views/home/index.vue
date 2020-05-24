@@ -21,6 +21,7 @@ export default {
     TopNav, HeaderNav, MenuNav, SlideShow, RecommendList, FooterNav,
   },
   mounted() {
+    document.title = 'FBMall3';
   },
   data() {
     return {};

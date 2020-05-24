@@ -43,7 +43,7 @@
               <div class="productDetails" v-show="productDetails">
                 <div class="productDetails__title">产品参数</div>
                 <div class="productDetails__content">
-                  <span v-for="item in productExtra" :key="item.descKey">
+                  <span v-for="item in filterProductExtra" :key="item.descKey">
                     <span class="productDetails__item">
                       <span class="productDetails__item--key" v-text="item.descKey"></span>
                       <span class="productDetails__item--value" v-text="item.descValue"></span>
@@ -60,39 +60,16 @@
               </div>
 
               <div class="productReviews" v-show="productReviews">
-                <div class="reviewsItem">
-                  <div class="reviewsContent">
-                    <div class="reviewsContent__main">
-                      屏幕清晰，款式好看，包装精致，发货快，
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
+                <div v-for="item in filterProductReviews" :key="item.id">
+                  <div class="reviewsItem">
+                    <div class="reviewsContent">
+                      <div class="reviewsContent__main" v-text="item.content"></div>
+                      <div class="reviewsContent__datetime" v-text="item.datetime"></div>
                     </div>
-                    <div class="reviewsContent__datetime">2019-08-11</div>
-                  </div>
 
-                  <div class="reviewsPublisher">
-                    <span><span>阿***吧</span>（匿名）</span>
-                  </div>
-                </div>
-
-                <div class="reviewsItem">
-                  <div class="reviewsContent">
-                    <div class="reviewsContent__main">
-                      屏幕清晰，款式好看，包装精致，发货快，
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
-                      看影视，直播转换特快，非常喜欢海信国内著名品牌。
+                    <div class="reviewsPublisher">
+                      <span><span v-text="item.user"></span>（匿名）</span>
                     </div>
-                    <div class="reviewsContent__datetime">2019-08-11</div>
-                  </div>
-
-                  <div class="reviewsPublisher">
-                    <span><span>阿***吧</span>（匿名）</span>
                   </div>
                 </div>
               </div>
@@ -123,15 +100,24 @@ export default {
       .then((data) => {
         pageResProcess(data);
       });
+
+    this.$store.dispatch('product/getProductReviews', that.$route.query.id)
+      .then((data) => {
+        pageResProcess(data);
+      });
   },
   mounted() {},
   computed: {
-    productExtra() {
+    filterProductExtra() {
       return this.$store.getters['product/filterProductExtra'];
     },
 
     filterImageExtraUrl() {
       return this.$store.getters['product/filterImageExtraUrl'];
+    },
+
+    filterProductReviews() {
+      return this.$store.getters['product/filterProductReviews'];
     },
   },
   watch: {},
@@ -146,14 +132,12 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
       if (key === '1') {
-        console.log('切换到商品详情');
-        this.activeIndex = 1;
+        this.activeIndex = '1';
         this.productDetails = true;
         this.productReviews = false;
       }
       if (key === '2') {
-        console.log('切换到累计评价');
-        this.activeIndex = 2;
+        this.activeIndex = '2';
         this.productDetails = false;
         this.productReviews = true;
       }

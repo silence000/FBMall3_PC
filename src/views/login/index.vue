@@ -68,7 +68,9 @@ export default {
   components: {
     TopNav, FooterNav, Logo,
   },
-  mounted() {},
+  mounted() {
+    document.title = 'FBMall3 - 用户注册';
+  },
   data() {
     return {
       loginImageUrl: `${this.$store.state.ImagesServerURL}img/site/6702.png`,

@@ -29,3 +29,5 @@ export const alterProductDetails = 'alterProductDetails';
 export const alterImageSmallUrl = 'alterImageSmallUrl';
 export const alterProductExtra = 'alterProductExtra';
 export const alterImageExtraUrl = 'alterImageExtraUrl';
+export const alterProductReviewsNumber = 'alterProductReviewsNumber';
+export const alterProductReviews = 'alterProductReviews';

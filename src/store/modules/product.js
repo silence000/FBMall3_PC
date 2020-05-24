@@ -1,12 +1,20 @@
+import dayjs from 'dayjs';
 import {
   alterProductDetails,
   alterImageSmallUrl,
   alterProductExtra,
   alterImageExtraUrl,
+  alterProductReviewsNumber,
+  alterProductReviews,
 } from '../mutationsType';
 
 import {
-  getProductDetails, getProductDetailImages, getProductExtra, getImageExtraUrl,
+  getProductDetails,
+  getProductDetailImages,
+  getProductExtra,
+  getImageExtraUrl,
+  getProductReviewsNumber,
+  getProductReviews,
 } from '../../service/product';
 
 import { vuexResProcess } from '../../assets/util/ResProcess';
@@ -19,6 +27,8 @@ export default {
     imageExtraUrl: [], // 商品额外图片链接
     productDetails: {}, // 商品基础数据
     productExtra: [], // 商品额外数据
+    productReviewsNumber: '', // 商品评论总数
+    productReviews: [], // 商品评论
   },
 
   getters: { // 过滤器
@@ -45,6 +55,15 @@ export default {
         return item;
       });
     },
+
+    filterProductReviews(state) {
+      return state.productReviews.map((item) => {
+        const placeholder = '*';
+        // eslint-disable-next-line no-param-reassign
+        item.user = `${item.user.charAt(0)}${placeholder.repeat(item.user.length - 2)}${item.user.charAt(item.user.length - 1)}`;
+        return item;
+      });
+    },
   },
 
   mutations: { // 用于触发事件
@@ -62,6 +81,14 @@ export default {
 
     [alterImageExtraUrl](state, payload) {
       state.imageExtraUrl = payload;
+    },
+
+    [alterProductReviewsNumber](state, payload) {
+      state.productReviewsNumber = payload;
+    },
+
+    [alterProductReviews](state, payload) {
+      state.productReviews = payload;
     },
   },
 
@@ -92,6 +119,37 @@ export default {
       params.append('id', payload);
       const { data, error } = await getImageExtraUrl(params);
       return vuexResProcess({ commit }, alterImageExtraUrl, data, error);
+    },
+
+    async getProductReviewsNumber({ commit }, payload) {
+      const params = new URLSearchParams();
+      params.append('id', payload);
+      const { data, error } = await getProductReviewsNumber(params);
+      return vuexResProcess({ commit }, alterProductReviewsNumber, data, error);
+    },
+
+    async getProductReviews({ commit }, payload) {
+      const params = new URLSearchParams();
+      params.append('id', payload);
+      const { data, error } = await getProductReviews(params);
+      if (!data.data === false) {
+        return vuexResProcess({ commit }, alterProductReviews, data, error);
+      }
+      const nullResponse = {
+        code: 1,
+        msg: 'Success',
+        data: [
+          {
+            id: '1',
+            content: '该商品暂无评论!',
+            user: 'admin',
+            // todo 此处不知道为什么月份会比实际月份少1
+            datetime: `${dayjs().year()}-${dayjs().month() + 1}-${dayjs().date()} ${dayjs().hour()}:${dayjs().minute()}:${dayjs().second()}`,
+          },
+        ],
+        extra: null,
+      };
+      return vuexResProcess({ commit }, alterProductReviews, nullResponse, error);
     },
   },
 };

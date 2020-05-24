@@ -73,7 +73,9 @@ export default {
   components: {
     TopNav, HeaderNav, FooterNav,
   },
-  mounted() {},
+  mounted() {
+    document.title = 'FBMall3 - 用户注册';
+  },
   data() {
     return {};
   },
