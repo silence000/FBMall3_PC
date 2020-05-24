@@ -7,6 +7,7 @@ import {
 // 引入Vuex模块
 import registerLogin from './modules/registerLogin';
 import home from './modules/home';
+import product from './modules/product';
 
 Vue.use(Vuex);
 
@@ -44,6 +45,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    registerLogin, home,
+    registerLogin, home, product,
   },
 });

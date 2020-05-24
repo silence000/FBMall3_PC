@@ -3,13 +3,15 @@ import {
   alterSlideMenuKey,
   alterRecommends,
   alterSlideMenuContent,
+  alterListProductInfo,
 } from '../mutationsType';
 
 import {
-  getCategoryItem, getSlideMenuContent,
+  getCategoryItem, getSlideMenuContent, getListProductInfo,
 } from '../../service/home';
 
 import { vuexResProcess } from '../../assets/util/ResProcess';
+import PriceFix from '../../assets/util/PriceFix';
 
 export default {
   namespaced: true,
@@ -19,6 +21,7 @@ export default {
     menuNavItem: [], // 横向菜单数据
     slideMenuKey: [], // 侧边导航数据
     slideMenuContent: [], // 侧边导航弹出数据
+    listProductInfo: [], // 主页推荐商品数据
   },
 
   getters: { // 过滤器
@@ -28,8 +31,21 @@ export default {
         item.subTitle = item.subTitle.replace(/[ ]/g, '\b \b \b \b \b \b \b');
         return item;
       });
-    }
-    ,
+    },
+
+    filterListProductInfo(state, getters, rootState) {
+      return state.listProductInfo.map((item) => {
+        // eslint-disable-next-line no-param-reassign
+        item.content.map((atom) => {
+          // eslint-disable-next-line no-param-reassign
+          atom.imgUrl = `${rootState.ImagesServerURL}img/productSingle_middle/${atom.imgUrl}.jpg`;
+          // eslint-disable-next-line no-param-reassign
+          atom.promotePrice = `¥ ${PriceFix(atom.promotePrice)}`;
+          return atom;
+        });
+        return item;
+      });
+    },
   },
 
   mutations: { // 用于触发事件
@@ -47,6 +63,10 @@ export default {
 
     [alterSlideMenuContent](state, payload) {
       state.slideMenuContent = payload;
+    },
+
+    [alterListProductInfo](state, payload) {
+      state.listProductInfo = payload;
     },
   },
 
@@ -80,6 +100,16 @@ export default {
       params.append('categoryId', payload);
       const { data, error } = await getSlideMenuContent(params);
       return vuexResProcess({ commit }, alterSlideMenuContent, data, error);
+    },
+
+    async getListProductInfo({ commit }) {
+      const params = new URLSearchParams();
+      params.append('cateCurrent', 1);
+      params.append('cateSize', 20);
+      params.append('productCurrent', 1);
+      params.append('productSize', 5);
+      const { data, error } = await getListProductInfo(params);
+      return vuexResProcess({ commit }, alterListProductInfo, data, error);
     },
   },
 };

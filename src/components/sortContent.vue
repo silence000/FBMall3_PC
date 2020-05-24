@@ -106,6 +106,7 @@ export default {
   @import "../assets/scss/constant";
   @import "../assets/scss/mixins";
   // 变量定义
+  $recommend--background-color: #F5F5F5;
   $recommend__title-color: #646464;
   $border-color: #EBEEF5;
   $price--color: #FF003A;
@@ -135,7 +136,13 @@ export default {
   .recommendContent {
     width: 190px;
     float: left;
-    margin: 15px 4px 0 4px;
+    margin: 15px 3px 0 3px;
+    border: 2px solid $recommend--background-color;
+
+    &:hover {
+      cursor: pointer;
+      border: 2px solid $color-primary;
+    }
 
     &__title {
       padding: 10px;

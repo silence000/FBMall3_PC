@@ -11,8 +11,8 @@
               <div class="shopInfo__desc">
                 <span>描述</span>
                 <span>服务</span>
-                <span>物流</span
-              ></div>
+                <span>物流</span>
+              </div>
 
               <div class="shopInfo__descContent">
                 <span>4.8&nbsp;<i class="fa fa-long-arrow-up" aria-hidden="true"></i></span>
@@ -43,20 +43,19 @@
               <div class="productDetails" v-show="productDetails">
                 <div class="productDetails__title">产品参数</div>
                 <div class="productDetails__content">
-                  <span class="productDetails__item"><span>操作系统</span>：<span>Android</span></span>
-                  <span class="productDetails__item"><span>3D类型</span>：<span>无</span></span>
-                  <span class="productDetails__item"><span>能效等级</span>：<span>一级</span></span>
-                  <span class="productDetails__item"><span>产品名称</span>：<span>Hisense海信</span></span>
-                  <span class="productDetails__item"><span>网络连接方式</span>：<span>全部支持</span></span>
+                  <span v-for="item in productExtra" :key="item.descKey">
+                    <span class="productDetails__item">
+                      <span class="productDetails__item--key" v-text="item.descKey"></span>
+                      <span class="productDetails__item--value" v-text="item.descValue"></span>
+                    </span>
+                  </span>
                 </div>
 
                 <br>
                 <div class="productDetails__images">
-                  <el-image :src="imgUrl"></el-image>
-                  <el-image :src="imgUrl"></el-image>
-                  <el-image :src="imgUrl"></el-image>
-                  <el-image :src="imgUrl"></el-image>
-                  <el-image :src="imgUrl"></el-image>
+                  <div v-for="item in filterImageExtraUrl" :key="item.id">
+                    <el-image :src="item.link"></el-image>
+                  </div>
                 </div>
               </div>
 
@@ -107,16 +106,40 @@
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+
 export default {
   name: 'productExtra',
   components: {},
+  created() {
+    const that = this;
+    // 请求页面数据
+    this.$store.dispatch('product/getProductExtra', that.$route.query.id)
+      .then((data) => {
+        pageResProcess(data);
+      });
+
+    this.$store.dispatch('product/getImageExtraUrl', that.$route.query.id)
+      .then((data) => {
+        pageResProcess(data);
+      });
+  },
   mounted() {},
+  computed: {
+    productExtra() {
+      return this.$store.getters['product/filterProductExtra'];
+    },
+
+    filterImageExtraUrl() {
+      return this.$store.getters['product/filterImageExtraUrl'];
+    },
+  },
+  watch: {},
   data() {
     return {
       productDetails: true,
       productReviews: false,
       activeIndex: '1',
-      imgUrl: `${this.$store.state.ImagesServerURL}img/productDetail/671.jpg`,
     };
   },
   methods: {
@@ -136,8 +159,6 @@ export default {
       }
     },
   },
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">
@@ -244,6 +265,22 @@ export default {
       display: inline-block;
       width: 220px;
       padding: 10px 0;
+
+      &--key {
+        display: inline-block;
+        width: 60px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      }
+
+      &--value {
+        display: inline-block;
+        width: 145px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      }
     }
   }
 

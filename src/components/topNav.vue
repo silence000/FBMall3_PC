@@ -4,7 +4,7 @@
 
       <div class="topNav">
         <div class="topNavContent topNavContent--left">
-          <el-link :underline="false" @click="jmp('/main')">
+          <el-link :underline="false" @click="jmp('/home')">
             <i class="fa fa-home topNavContent__icon" aria-hidden="true"></i> 商城首页
           </el-link>
           <el-link

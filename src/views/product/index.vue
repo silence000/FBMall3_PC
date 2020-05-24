@@ -20,7 +20,11 @@ export default {
   components: {
     TopNav, HeaderNav, BannerAd, ProductDetails, ProductExtra, FooterNav,
   },
-  mounted() {},
+  mounted() {
+    // 调整页面位置到页面的最上方
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  },
   data() {
     return {};
   },

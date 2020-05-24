@@ -3,7 +3,7 @@
     <div class="container">
 
       <div class="imagePreview">
-        <div class="imageBig">
+        <div class="imageBig" v-loading="loadingImage">
           <el-image
             style="width: 358px; height: 358px"
             :src="imageBigUrl"
@@ -12,37 +12,23 @@
         </div>
 
         <div class="imageSmall">
-          <el-image
-            style="width: 60px; height: 60px"
-            :src="imageBigUrl"
-            fit="fill"
-          ></el-image>
-          <el-image
-            style="width: 60px; height: 60px"
-            :src="imageBigUrl"
-            fit="fill"
-          ></el-image>
-          <el-image
-            style="width: 60px; height: 60px"
-            :src="imageBigUrl"
-            fit="fill"
-          ></el-image>
-          <el-image
-            style="width: 60px; height: 60px"
-            :src="imageBigUrl"
-            fit="fill"
-          ></el-image>
-          <el-image
-            style="width: 60px; height: 60px"
-            :src="imageBigUrl"
-            fit="fill"
-          ></el-image>
+          <div
+            class="imageSmall__container"
+            @mouseover="switchImage(item.id)"
+            v-for="item in imageSmallUrl"
+            :key="item.id">
+            <el-image
+              style="width: 60px; height: 60px"
+              :src="item.link"
+              fit="fill"
+            ></el-image>
+          </div>
         </div>
       </div>
 
       <div class="productInfo">
-        <div class="productInfo__title">Changhong/长虹 65S1安卓智能12核65英寸网络平板LED液晶电视机70</div>
-        <div class="productInfo__subtitle">屏大影院 高配12核 安卓智能</div>
+        <div class="productInfo__title" v-text="productDetails.name"></div>
+        <div class="productInfo__subtitle" v-text="productDetails.subTitle"></div>
         <div class="productInfo__priceTitle"><span>聚划算&nbsp;</span>此商品即将参加聚划算！速速抢购！</div>
 
         <div class="productInfo__priceBlock">
@@ -50,19 +36,22 @@
 
           <div class="productInfo__oldPrice">
             <span class="productInfo__oldPrice--key">价格</span>
-            <span class="productInfo__oldPrice--value">¥ 4499.01</span>
+            <span
+              class="productInfo__oldPrice--value">
+              <span>¥&nbsp;</span>{{ formatPrice(productDetails.originalPrice) }}
+            </span>
           </div>
 
           <div class="productInfo__nowPrice">
             <span class="productInfo__nowPrice--key">促销价</span>
             <span class="productInfo__nowPrice--value">
-              <span>¥&nbsp;</span>3824.16
+              <span>¥&nbsp;</span>{{ formatPrice(productDetails.promotePrice) }}
             </span>
           </div>
         </div>
 
         <div class="productInfo__salesBlock">
-          <div class="productInfo__sales">销量&nbsp;<span>8846</span></div>
+          <div class="productInfo__sales">销量&nbsp;<span v-text="productDetails.sales"></span></div>
           <div class="productInfo__reviews">累计评价&nbsp;<span>337</span></div>
         </div>
 
@@ -70,13 +59,13 @@
           <div class="productInfo__numberTitle">数量</div>
           <el-input-number
             class="productInfo__numberStep"
-            v-model="num"
+            v-model="buyNum"
             @change="handleChange"
             size="small"
             :min="1"
             :max="10"
           ></el-input-number>
-          <div class="productInfo__stock">库存<span>84</span>件</div>
+          <div class="productInfo__stock">库存<span v-text="productDetails.stock"></span>件</div>
         </div>
 
         <div class="productInfo__service">
@@ -101,23 +90,66 @@
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+import PriceFix from '../assets/util/PriceFix';
+
 export default {
   name: 'productDetails',
   components: {},
-  mounted() {},
+  created() {},
+  mounted() {
+    const that = this;
+    // 请求页面数据
+    this.$store.dispatch('product/getProductDetails', that.$route.query.id)
+      .then((data) => {
+        pageResProcess(data);
+      });
+
+    this.$store.dispatch('product/getProductDetailImages', that.$route.query.id)
+      .then((data) => {
+        pageResProcess(data);
+        // 更改页面标题
+        document.title = this.$store.state.product.productDetails.name;
+        // 初始化商品展示大图
+        const { id } = this.$store.state.product.imageSmallUrl[0];
+        setTimeout(() => {
+          this.switchImage(id);
+          this.loadingImage = false;
+        }, 100);
+      });
+  },
+  computed: {
+    productDetails() {
+      return this.$store.state.product.productDetails;
+    },
+
+    imageSmallUrl() {
+      return this.$store.getters['product/filterImageSmallUrl'];
+    },
+  },
+  watch: {},
   data() {
     return {
-      imageBigUrl: `${this.$store.state.ImagesServerURL}img/productSingle/665.jpg`,
-      num: '1',
+      imageBigUrl: '', // 商品预览大图链接
+      buyNum: '1', // 购买数量
+      loadingImage: true,
     };
   },
   methods: {
+    formatPrice(val) {
+      return PriceFix(val);
+    },
+
     onClickBuy() {
       console.log('点击了购买');
     },
+
+    handleChange() {},
+
+    switchImage(val) {
+      this.imageBigUrl = `${this.$store.state.ImagesServerURL}img/productSingle/${val}.jpg`;
+    },
   },
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">
@@ -151,11 +183,12 @@ export default {
       width: 320px;
       margin: 10px auto;
 
-      .el-image + .el-image {
+      .imageSmall__container + .imageSmall__container {
         margin-left: 2px;
       }
 
-      .el-image {
+      &__container {
+        display: inline-block;
         border: 1px solid $color-white;
 
         &:hover {

@@ -21,3 +21,11 @@ export const alterMenuNavItem = 'alterMenuNavItem';
 export const alterSlideMenuKey = 'alterSlideMenuKey';
 export const alterRecommends = 'alterRecommends';
 export const alterSlideMenuContent = 'alterSlideMenuContent';
+export const alterListProductInfo = 'alterListProductInfo';
+/*
+* product.js
+* */
+export const alterProductDetails = 'alterProductDetails';
+export const alterImageSmallUrl = 'alterImageSmallUrl';
+export const alterProductExtra = 'alterProductExtra';
+export const alterImageExtraUrl = 'alterImageExtraUrl';

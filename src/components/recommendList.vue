@@ -2,126 +2,68 @@
   <div class="containerFluid">
     <div class="container">
 
-      <div class="recommendList">
-        <p v-text="listTitle[0]"></p>
+      <div
+        class="recommendList"
+        v-for="item in listProductInfo"
+        :key="item.categoryId">
+        <p v-text="item.name"></p>
+
         <el-card
           class="recommendContent"
           :body-style="{ padding: '0px' }"
           shadow="hover"
-          v-for="item in list1ProductInfo"
-          :key="item.id"
-        >
-          <el-image
-            style="width: 190px; height: 190px"
-            :src=item.imgUrl
-            fit="fill"
-          ></el-image>
-          <div class="recommendContent__title" v-text=item.title></div>
-          <div class="recommendContent__price" v-text="item.price"></div>
+          v-for="itemContent in item.content"
+          :key="itemContent.id">
+          <div @click="toProductPage(itemContent.id)">
+            <el-image
+              style="width: 190px; height: 190px"
+              :src=itemContent.imgUrl
+              fit="fill"
+            ></el-image>
+            <div class="recommendContent__title" v-text=itemContent.name></div>
+            <div
+              class="recommendContent__price"
+              v-text="itemContent.promotePrice"></div>
+          </div>
         </el-card>
       </div>
 
-      <div class="recommendList">
-        <p v-text="listTitle[1]"></p>
-        <el-card
-          class="recommendContent"
-          :body-style="{ padding: '0px' }"
-          shadow="hover"
-          v-for="item in list1ProductInfo"
-          :key="item.id"
-        >
-          <el-image
-            style="width: 190px; height: 190px"
-            :src=item.imgUrl
-            fit="fill"
-          ></el-image>
-          <div class="recommendContent__title" v-text=item.title></div>
-          <div class="recommendContent__price" v-text="item.price"></div>
-        </el-card>
-      </div>
-
-      <div class="recommendList">
-        <p v-text="listTitle[2]"></p>
-        <el-card
-          class="recommendContent"
-          :body-style="{ padding: '0px' }"
-          shadow="hover"
-          v-for="item in list1ProductInfo"
-          :key="item.id"
-        >
-          <el-image
-            style="width: 190px; height: 190px"
-            :src=item.imgUrl
-            fit="fill"
-          ></el-image>
-          <div class="recommendContent__title" v-text=item.title></div>
-          <div class="recommendContent__price" v-text="item.price"></div>
-        </el-card>
-      </div>
-
+      <br>
     </div>
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+
 export default {
   name: 'recommendList',
   components: {},
-  mounted() {},
-  data() {
-    return {
-      listTitle: [
-        '平板电视',
-        '马桶',
-        '沙发',
-        '电热水器',
-        '平衡车',
-        '扫地机器人',
-        '原汁机',
-        '空调',
-        '女表',
-        '男表',
-        '男士手拿包',
-        '男士西服',
-        '时尚男鞋',
-        '太阳镜',
-        '安全座椅',
-      ],
-      list1ProductInfo: [
-        {
-          id: '1',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-        },
-        {
-          id: '2',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-        },
-        {
-          id: '3',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-        },
-        {
-          id: '4',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-        },
-        {
-          id: '5',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-        },
-      ],
-    };
+  created() {
+    this.$store.dispatch('home/getListProductInfo')
+      .then((data) => {
+        pageResProcess(data);
+      });
   },
-  methods: {},
-  computed: {},
+  mounted() {},
+  methods: {
+    toProductPage(id) {
+      console.log(id);
+      this.$router.push({
+        path: '/product',
+        query: {
+          id,
+        },
+      });
+    },
+  },
+  computed: {
+    listProductInfo() {
+      return this.$store.getters['home/filterListProductInfo'];
+    },
+  },
+  data() {
+    return {};
+  },
   watch: {},
 };
 </script>
@@ -160,11 +102,19 @@ export default {
   .recommendContent {
     width: 190px;
     float: left;
-    margin: 15px 4px 0 4px;
+    margin: 15px 3px 0 3px;
+    border: 2px solid $recommend--background-color;
+
+    &:hover {
+      cursor: pointer;
+      border: 2px solid $color-primary;
+    }
 
     &__title {
-      padding: 10px;
+      margin: 10px;
       font-size: 12px;
+      height: 34px;
+      overflow: hidden;
     }
 
     &__price {
