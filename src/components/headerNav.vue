@@ -19,7 +19,7 @@
               placeholder="时尚男鞋, 太阳镜"
               class="headerNavSearch__input"
             >
-              <el-button slot="append">搜 索</el-button>
+              <el-button slot="append" @click="searchProduct">搜 索</el-button>
             </el-input>
 
             <div class="recommendsNavSearch">
@@ -27,7 +27,7 @@
                 v-for="item in recommends"
                 :key="item.id"
                 class="headerNavSearch__recommends"
-              >
+                @click="toCategoryPage(item.id, item.name)">
                 <el-link
                   :underline="false"
                   v-text="item.name">
@@ -45,6 +45,7 @@
 import { pageResProcess } from '../assets/util/ResProcess';
 
 export default {
+  inject: ['reload'],
   name: 'headerNav',
   components: {},
   created() {
@@ -66,7 +67,39 @@ export default {
     },
   },
   watch: {},
-  methods: {},
+  methods: {
+    searchProduct() {
+      this.$store.commit('alterPageTitle', this.searchContent);
+      if (this.$route.path !== '/search') {
+        this.$router.push({
+          path: '/search',
+          query: {
+            name: this.searchContent,
+          },
+        });
+      } else {
+        // todo 浏览器地址栏地址不会随之修改
+        this.$route.query.name = this.searchContent;
+        this.reload();
+      }
+    },
+
+    toCategoryPage(id, title) {
+      this.$store.commit('alterPageTitle', title);
+      if (this.$route.path !== '/category') {
+        this.$router.push({
+          path: '/category',
+          query: {
+            cid: id,
+          },
+        });
+      } else {
+        // todo 浏览器地址栏地址不会随之修改
+        this.$route.query.cid = id;
+        this.reload();
+      }
+    },
+  },
 };
 </script>
 <style scoped lang="scss">

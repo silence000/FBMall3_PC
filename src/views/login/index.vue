@@ -69,7 +69,7 @@ export default {
     TopNav, FooterNav, Logo,
   },
   mounted() {
-    document.title = 'FBMall3 - 用户注册';
+    this.$store.commit('alterPageTitle', '用户登录');
   },
   data() {
     return {

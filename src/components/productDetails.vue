@@ -111,7 +111,7 @@ export default {
       .then((data) => {
         pageResProcess(data);
         // 更改页面标题
-        document.title = `FBMall3 - ${this.$store.state.product.productDetails.name}`;
+        that.$store.commit('alterPageTitle', this.$store.state.product.productDetails.name);
         // 初始化商品展示大图
         const { id } = this.$store.state.product.imageSmallUrl[0];
         setTimeout(() => {

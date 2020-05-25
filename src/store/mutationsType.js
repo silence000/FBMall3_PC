@@ -6,6 +6,7 @@ export const ApiURL = 'http://localhost:8891';
 export const alterUserId = 'alterUserId';
 export const alterAccessToken = 'alterAccess_token';
 export const alterRefreshToken = 'alterRefresh_token';
+export const alterPageTitle = 'alterPageTitle';
 /*
 * registerLogin.js
 * */
@@ -31,3 +32,7 @@ export const alterProductExtra = 'alterProductExtra';
 export const alterImageExtraUrl = 'alterImageExtraUrl';
 export const alterProductReviewsNumber = 'alterProductReviewsNumber';
 export const alterProductReviews = 'alterProductReviews';
+/*
+* category.js
+* */
+export const alterCategoryProductInfo = 'alterCategoryProductInfo';

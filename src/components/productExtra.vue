@@ -129,8 +129,7 @@ export default {
     };
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key) {
       if (key === '1') {
         this.activeIndex = '1';
         this.productDetails = true;

@@ -47,7 +47,6 @@ export default {
   mounted() {},
   methods: {
     toProductPage(id) {
-      console.log(id);
       this.$router.push({
         path: '/product',
         query: {

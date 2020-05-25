@@ -22,7 +22,7 @@
               @mouseover="showSlideMenu(item.id)">
               <el-link :underline="false">
                 <i class="fa fa-anchor" aria-hidden="true"></i>
-                <span v-text="item.name"></span>
+                <span v-text="item.name" @click="toCategoryPage(item.id, item.name)"></span>
               </el-link>
             </div>
           </div>
@@ -31,7 +31,7 @@
             <div class="slideMenuContent__container">
               <div class="slideMenuContent__item" v-for="item in slideMenuContent" :key="item.id">
                 <el-link :underline="false">
-                  <span v-text="item.subTitle"></span>
+                  <span v-text="item.subTitle" @click="toProductPage(item.id)"></span>
                 </el-link>
               </div>
             </div>
@@ -85,8 +85,28 @@ export default {
           this.displayMenu = true;
         });
     },
+
     closeSlideMenu() {
       this.displayMenu = false;
+    },
+
+    toProductPage(id) {
+      this.$router.push({
+        path: '/product',
+        query: {
+          id,
+        },
+      });
+    },
+
+    toCategoryPage(id, title) {
+      this.$store.commit('alterPageTitle', title);
+      this.$router.push({
+        path: '/category',
+        query: {
+          cid: id,
+        },
+      });
     },
   },
 };

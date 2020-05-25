@@ -74,7 +74,7 @@ export default {
     TopNav, HeaderNav, FooterNav,
   },
   mounted() {
-    document.title = 'FBMall3 - 用户注册';
+    this.$store.commit('alterPageTitle', '用户注册');
   },
   data() {
     return {};

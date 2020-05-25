@@ -14,11 +14,6 @@ const routes = [
     component: () => import('../views/home'),
   },
   {
-    path: '/sort',
-    name: 'Sort',
-    component: () => import('../views/sort'),
-  },
-  {
     path: '/product',
     name: 'Product',
     component: () => import('../views/product'),
@@ -36,12 +31,12 @@ const routes = [
   {
     path: '/search',
     name: 'Search',
-    component: () => import('../views/sort'),
+    component: () => import('../views/category'),
   },
   {
-    path: '/cart',
-    name: 'Cart',
-    component: () => import('../views/cart'),
+    path: '/category',
+    name: 'Category',
+    component: () => import('../views/category'),
   },
   {
     path: '/submit',

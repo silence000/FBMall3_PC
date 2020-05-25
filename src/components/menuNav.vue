@@ -25,7 +25,11 @@
           class="menuNav__normalItem menuNav__content"
           v-for="item in menuNavItem"
           :key="item.id">
-          <el-link :underline="false" v-text="item.name" @click="test(item.id)"></el-link>
+          <el-link
+            :underline="false"
+            v-text="item.name"
+            @click="toCategoryPage(item.id, item.name)">
+          </el-link>
         </div>
 
       </div>
@@ -55,8 +59,14 @@ export default {
   },
   watch: {},
   methods: {
-    test(val) { // todo
-      console.log(val);
+    toCategoryPage(id, title) {
+      this.$store.commit('alterPageTitle', title);
+      this.$router.push({
+        path: '/category',
+        query: {
+          cid: id,
+        },
+      });
     },
   },
 };

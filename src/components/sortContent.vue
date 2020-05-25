@@ -6,7 +6,7 @@
           class="recommendContent"
           :body-style="{ padding: '0px' }"
           shadow="hover"
-          v-for="item in list1ProductInfo"
+          v-for="item in categoryProductInfo"
           :key="item.id"
         >
           <el-image
@@ -14,14 +14,14 @@
             :src=item.imgUrl
             fit="fill"
           ></el-image>
-          <div class="recommendContent__title" v-text=item.title></div>
-          <div class="recommendContent__price" v-text="item.price"></div>
+          <div class="recommendContent__title" v-text=item.name></div>
+          <div class="recommendContent__price" v-text="item.promotePrice"></div>
           <div class="recommendContent__extra">
             <div class="recommendContent__extra--sales">
               月成交&nbsp;<span v-text="item.sales"></span>
             </div>
             <div class="recommendContent__extra--reviews">
-              评价&nbsp;<span v-text="item.reviews"></span>
+              评价&nbsp;<span v-text="item.reviewNumber"></span>
             </div>
           </div>
         </el-card>
@@ -30,75 +30,43 @@
   </div>
 </template>
 <script>
+import { pageResProcess } from '../assets/util/ResProcess';
+
 export default {
   name: 'sortContent',
   components: {},
+  created() {
+    const that = this;
+    // 请求页面数据
+    let payload = {};
+    if (this.$route.query.cid) {
+      payload = {
+        cid: that.$route.query.cid,
+      };
+    }
+    if (this.$route.query.name) {
+      payload = {
+        name: that.$route.query.name,
+      };
+    }
+    this.$store.dispatch('category/getProductByCategory', payload)
+      .then((data) => {
+        pageResProcess(data);
+      });
+  },
   mounted() {},
+  computed: {
+    categoryProductInfo() {
+      return this.$store.getters['category/filterCategoryProductInfo'];
+    },
+  },
+  watch: {
+    $route: 'fetchDate',
+  },
   data() {
-    return {
-      list1ProductInfo: [
-        {
-          id: '1',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-        {
-          id: '2',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-        {
-          id: '3',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-        {
-          id: '4',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-        {
-          id: '5',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-        {
-          id: '6',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-        {
-          id: '7',
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/9.jpg`,
-          title: '[热销]夏普屏PANDA/熊猫LE39D71S',
-          price: '¥ 1234.56',
-          sales: '8791',
-          reviews: '335',
-        },
-      ],
-    };
+    return {};
   },
   methods: {},
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">

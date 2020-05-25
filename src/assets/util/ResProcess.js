@@ -23,6 +23,9 @@ function pageResProcess(data) {
       Vue.prototype.$message.error('内容加载失败');
       console.log(data);
     }
+    if (data.code === 1 && data.data === 'no_data') {
+      Vue.prototype.$message.warning('抱歉，暂无该商品');
+    }
   } else {
     Vue.prototype.$message.error('请求失败：服务器内部错误或请求超时');
     console.log(data);

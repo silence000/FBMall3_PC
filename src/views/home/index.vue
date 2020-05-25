@@ -21,7 +21,7 @@ export default {
     TopNav, HeaderNav, MenuNav, SlideShow, RecommendList, FooterNav,
   },
   mounted() {
-    document.title = 'FBMall3';
+    this.$store.commit('alterPageTitle', '瞄~欢迎来到FBMall');
   },
   data() {
     return {};
