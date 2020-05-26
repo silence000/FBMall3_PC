@@ -55,3 +55,17 @@ export const getProductReviews = (params) => Vue.axios.get(`${ApiURL}/reviews/ge
     }
     return error;
   });
+
+export const insertProductInCart = (params) => Vue.axios.post(`${ApiURL}/users/p3/insert/cart`, params, {
+  headers: {
+    Authorization: `Bearer ${Vue.prototype.$myStore.state.accessToken}`,
+  },
+})
+  .then((response) => response)
+  .catch((error) => {
+    console.log(error);
+    if (typeof (error.response) !== 'undefined') {
+      return error.response.data;
+    }
+    return error;
+  });

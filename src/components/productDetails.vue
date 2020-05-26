@@ -82,7 +82,10 @@
             class="productInfo__ButtonGroup--plain"
             @click="onClickBuy"
           >立即购买</el-button>
-          <el-button type="primary" class="productInfo__ButtonGroup--normal">
+          <el-button
+            type="primary"
+            class="productInfo__ButtonGroup--normal"
+            @click="onClickPutInCart">
             <i class="fa fa-shopping-cart topNavContent__icon" aria-hidden="true"></i> 加入购物车
           </el-button>
         </div>
@@ -92,7 +95,11 @@
   </div>
 </template>
 <script>
-import { pageResProcess } from '../assets/util/ResProcess';
+import {
+  alterPageTitle,
+  alterProductPage,
+} from '../store/mutationsType';
+import { pageResProcess, pageResProcessNoCommit } from '../assets/util/ResProcess';
 import PriceFix from '../assets/util/PriceFix';
 
 export default {
@@ -111,7 +118,7 @@ export default {
       .then((data) => {
         pageResProcess(data);
         // 更改页面标题
-        that.$store.commit('alterPageTitle', this.$store.state.product.productDetails.name);
+        that.$store.commit(`${[alterPageTitle]}`, this.$store.state.product.productDetails.name);
         // 初始化商品展示大图
         const { id } = this.$store.state.product.imageSmallUrl[0];
         setTimeout(() => {
@@ -153,6 +160,34 @@ export default {
 
     onClickBuy() {
       console.log('点击了购买');
+      // 判断用户是否登录
+      if (!this.$store.state.username) { // this.$store.state.username为null/undefined时进入
+        // 将当前商品页的商品Id存入登录页面的Vuex
+        this.$store.commit(`registerLogin/${[alterProductPage]}`, this.$route.query.id);
+        this.$router.push('/login');
+        return;
+      }
+      console.log(this);
+    },
+
+    onClickPutInCart() {
+      console.log('点击了加入购物车');
+      // 判断用户是否登录
+      if (!this.$store.state.username) {
+        // 将当前商品页的商品Id存入登录页面的Vuex
+        this.$store.commit(`registerLogin/${[alterProductPage]}`, this.$route.query.id);
+        this.$router.push('/login');
+        return;
+      }
+      // 执行加入购物车逻辑
+      const payload = {
+        pid: this.$route.query.id,
+        num: this.buyNum,
+      };
+      this.$store.dispatch('product/insertProductInCart', payload)
+        .then((data) => {
+          pageResProcessNoCommit(data, this.$route.query.id, '成功加入购物车', '加入购物车失败，请重试');
+        });
     },
 
     handleChange() {},

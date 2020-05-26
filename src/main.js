@@ -16,6 +16,8 @@ import './assets/plugin/font-awesome-4.7.0/css/font-awesome.min.css';
 Vue.config.productionTip = false;
 Vue.use(Axios, ElementUI);
 
+Vue.prototype.$myStore = store;
+
 new Vue({
   router,
   store,

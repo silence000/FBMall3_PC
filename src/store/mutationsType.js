@@ -13,8 +13,11 @@ export const alterPageTitle = 'alterPageTitle';
 export const alterUsername = 'alterUsername';
 export const alterUserpass = 'alterUserpass';
 export const alterUserpass2 = 'alterUserpass2';
-export const alterResponseData = 'alterResponseData';
+export const alterResponseData = 'alterResponseData'; // todo 保留数据
 export const alterLoading = 'alterLoading';
+export const alterProductPage = 'alterProductPage';
+export const alterMyOrdersPage = 'alterMyOrdersPage';
+export const alterMyCartPage = 'alterMyCartPage';
 /*
 * home.js
 * */

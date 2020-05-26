@@ -37,6 +37,7 @@
   </div>
 </template>
 <script>
+import { alterPageTitle } from '../store/mutationsType';
 import { pageResProcess } from '../assets/util/ResProcess';
 
 export default {
@@ -60,7 +61,7 @@ export default {
   watch: {},
   methods: {
     toCategoryPage(id, title) {
-      this.$store.commit('alterPageTitle', title);
+      this.$store.commit(`${[alterPageTitle]}`, title);
       this.$router.push({
         path: '/category',
         query: {

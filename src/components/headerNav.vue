@@ -42,6 +42,7 @@
   </div>
 </template>
 <script>
+import { alterPageTitle } from '../store/mutationsType';
 import { pageResProcess } from '../assets/util/ResProcess';
 
 export default {
@@ -69,7 +70,7 @@ export default {
   watch: {},
   methods: {
     searchProduct() {
-      this.$store.commit('alterPageTitle', this.searchContent);
+      this.$store.commit(`${[alterPageTitle]}`, this.searchContent);
       if (this.$route.path !== '/search') {
         this.$router.push({
           path: '/search',
@@ -78,14 +79,13 @@ export default {
           },
         });
       } else {
-        // todo 浏览器地址栏地址不会随之修改
         this.$route.query.name = this.searchContent;
         this.reload();
       }
     },
 
     toCategoryPage(id, title) {
-      this.$store.commit('alterPageTitle', title);
+      this.$store.commit(`${[alterPageTitle]}`, title);
       if (this.$route.path !== '/category') {
         this.$router.push({
           path: '/category',

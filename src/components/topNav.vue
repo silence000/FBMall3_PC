@@ -29,6 +29,11 @@
   </div>
 </template>
 <script>
+import {
+  alterMyOrdersPage,
+  alterMyCartPage,
+  alterUsername,
+} from '../store/mutationsType';
 import SwitchRouter from '../assets/util/SwitchRouter';
 
 export default {
@@ -41,11 +46,27 @@ export default {
   },
   methods: {
     jmp(val) {
+      if (val === '/order') {
+        if (!this.$store.state.username) { // 不存在时进入
+          // 提交myOrdersPage状态
+          this.$store.commit(`registerLogin/${[alterMyOrdersPage]}`, true);
+          SwitchRouter(this.$route.path, '/login');
+          return;
+        }
+      }
+      if (val === '/cart') {
+        if (!this.$store.state.username) { // 不存在时进入
+          // 提交myOrdersPage状态
+          this.$store.commit(`registerLogin/${[alterMyCartPage]}`, true);
+          SwitchRouter(this.$route.path, '/login');
+          return;
+        }
+      }
       SwitchRouter(this.$route.path, val);
     },
 
     exit() {
-      this.$store.commit('alterUsername', '');
+      this.$store.commit(`${alterUsername}`, '');
       sessionStorage.clear();
       this.jmp('/login');
     },

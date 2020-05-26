@@ -15,9 +15,10 @@ import {
   getImageExtraUrl,
   getProductReviewsNumber,
   getProductReviews,
+  insertProductInCart,
 } from '../../service/product';
 
-import { vuexResProcess } from '../../assets/util/ResProcess';
+import { vuexResProcess, vuexResProcessNoCommit } from '../../assets/util/ResProcess';
 
 export default {
   namespaced: true,
@@ -97,35 +98,35 @@ export default {
       const params = new URLSearchParams();
       params.append('id', payload);
       const { data, error } = await getProductDetails(params);
-      return vuexResProcess({ commit }, alterProductDetails, data, error);
+      return vuexResProcess({ commit }, `${[alterProductDetails]}`, data, error);
     },
 
     async getProductDetailImages({ commit }, payload) {
       const params = new URLSearchParams();
       params.append('id', payload);
       const { data, error } = await getProductDetailImages(params);
-      return vuexResProcess({ commit }, alterImageSmallUrl, data, error);
+      return vuexResProcess({ commit }, `${[alterImageSmallUrl]}`, data, error);
     },
 
     async getProductExtra({ commit }, payload) {
       const params = new URLSearchParams();
       params.append('id', payload);
       const { data, error } = await getProductExtra(params);
-      return vuexResProcess({ commit }, alterProductExtra, data, error);
+      return vuexResProcess({ commit }, `${[alterProductExtra]}`, data, error);
     },
 
     async getImageExtraUrl({ commit }, payload) {
       const params = new URLSearchParams();
       params.append('id', payload);
       const { data, error } = await getImageExtraUrl(params);
-      return vuexResProcess({ commit }, alterImageExtraUrl, data, error);
+      return vuexResProcess({ commit }, `${[alterImageExtraUrl]}`, data, error);
     },
 
     async getProductReviewsNumber({ commit }, payload) {
       const params = new URLSearchParams();
       params.append('id', payload);
       const { data, error } = await getProductReviewsNumber(params);
-      return vuexResProcess({ commit }, alterProductReviewsNumber, data, error);
+      return vuexResProcess({ commit }, `${[alterProductReviewsNumber]}`, data, error);
     },
 
     async getProductReviews({ commit }, payload) {
@@ -133,7 +134,7 @@ export default {
       params.append('id', payload);
       const { data, error } = await getProductReviews(params);
       if (!data.data === false) {
-        return vuexResProcess({ commit }, alterProductReviews, data, error);
+        return vuexResProcess({ commit }, `${[alterProductReviews]}`, data, error);
       }
       const nullResponse = {
         code: 1,
@@ -149,7 +150,17 @@ export default {
         ],
         extra: null,
       };
-      return vuexResProcess({ commit }, alterProductReviews, nullResponse, error);
+      return vuexResProcess({ commit }, `${[alterProductReviews]}`, nullResponse, error);
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    async insertProductInCart({ commit }, payload) {
+      const { pid, num } = payload;
+      const params = new URLSearchParams();
+      params.append('pid', pid);
+      params.append('num', num);
+      const { data, error } = await insertProductInCart(params);
+      return vuexResProcessNoCommit(data, error);
     },
   },
 };

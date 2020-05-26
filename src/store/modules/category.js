@@ -55,7 +55,7 @@ export default {
       }
       const { data, error } = await getCategoryItem(params);
       if (!data.data === false) {
-        return vuexResProcess({ commit }, alterCategoryProductInfo, data, error);
+        return vuexResProcess({ commit }, `${[alterCategoryProductInfo]}`, data, error);
       }
       return {
         code: 1,

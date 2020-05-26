@@ -9,6 +9,7 @@
   </div>
 </template>
 <script>
+import { alterPageTitle } from '../../store/mutationsType';
 import TopNav from '../../components/topNav.vue';
 import HeaderNav from '../../components/headerNav.vue';
 import MenuNav from '../../components/menuNav.vue';
@@ -21,7 +22,7 @@ export default {
     TopNav, HeaderNav, MenuNav, SlideShow, RecommendList, FooterNav,
   },
   mounted() {
-    this.$store.commit('alterPageTitle', '瞄~欢迎来到FBMall');
+    this.$store.commit(`${[alterPageTitle]}`, '瞄~欢迎来到FBMall');
   },
   data() {
     return {};

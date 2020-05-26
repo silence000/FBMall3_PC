@@ -9,19 +9,21 @@
           v-for="item in categoryProductInfo"
           :key="item.id"
         >
-          <el-image
-            style="width: 190px; height: 190px"
-            :src=item.imgUrl
-            fit="fill"
-          ></el-image>
-          <div class="recommendContent__title" v-text=item.name></div>
-          <div class="recommendContent__price" v-text="item.promotePrice"></div>
-          <div class="recommendContent__extra">
-            <div class="recommendContent__extra--sales">
-              月成交&nbsp;<span v-text="item.sales"></span>
-            </div>
-            <div class="recommendContent__extra--reviews">
-              评价&nbsp;<span v-text="item.reviewNumber"></span>
+          <div @click="toProductPage(item.id)">
+            <el-image
+              style="width: 190px; height: 190px"
+              :src=item.imgUrl
+              fit="fill"
+            ></el-image>
+            <div class="recommendContent__title" v-text=item.name></div>
+            <div class="recommendContent__price" v-text="item.promotePrice"></div>
+            <div class="recommendContent__extra">
+              <div class="recommendContent__extra--sales">
+                月成交&nbsp;<span v-text="item.sales"></span>
+              </div>
+              <div class="recommendContent__extra--reviews">
+                评价&nbsp;<span v-text="item.reviewNumber"></span>
+              </div>
             </div>
           </div>
         </el-card>
@@ -36,17 +38,16 @@ export default {
   name: 'sortContent',
   components: {},
   created() {
-    const that = this;
     // 请求页面数据
     let payload = {};
     if (this.$route.query.cid) {
       payload = {
-        cid: that.$route.query.cid,
+        cid: this.$route.query.cid,
       };
     }
     if (this.$route.query.name) {
       payload = {
-        name: that.$route.query.name,
+        name: this.$route.query.name,
       };
     }
     this.$store.dispatch('category/getProductByCategory', payload)
@@ -60,13 +61,20 @@ export default {
       return this.$store.getters['category/filterCategoryProductInfo'];
     },
   },
-  watch: {
-    $route: 'fetchDate',
-  },
+  watch: {},
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    toProductPage(id) {
+      this.$router.push({
+        path: '/product',
+        query: {
+          id,
+        },
+      });
+    },
+  },
 };
 </script>
 <style scoped lang="scss">

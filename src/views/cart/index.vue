@@ -117,6 +117,7 @@
   </div>
 </template>
 <script>
+import { alterPageTitle } from '../../store/mutationsType';
 import TopNav from '../../components/topNav.vue';
 import HeaderNav from '../../components/headerNav.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -125,7 +126,9 @@ export default {
   components: {
     TopNav, HeaderNav, FooterNav,
   },
-  mounted() {},
+  mounted() {
+    this.$store.commit(`${[alterPageTitle]}`, '购物车');
+  },
   data() {
     return {
       tableData: [

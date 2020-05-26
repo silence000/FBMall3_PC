@@ -76,7 +76,7 @@ export default {
       params.append('current', 1);
       params.append('size', 4);
       const { data, error } = await getCategoryItem(params);
-      return vuexResProcess({ commit }, alterMenuNavItem, data, error);
+      return vuexResProcess({ commit }, `${[alterMenuNavItem]}`, data, error);
     },
 
     async getRecommends({ commit }) {
@@ -84,7 +84,7 @@ export default {
       params.append('current', 2);
       params.append('size', 4);
       const { data, error } = await getCategoryItem(params);
-      return vuexResProcess({ commit }, alterRecommends, data, error);
+      return vuexResProcess({ commit }, `${[alterRecommends]}`, data, error);
     },
 
     async getSlideMenuKey({ commit }) {
@@ -92,14 +92,14 @@ export default {
       params.append('current', 1);
       params.append('size', 17);
       const { data, error } = await getCategoryItem(params);
-      return vuexResProcess({ commit }, alterSlideMenuKey, data, error);
+      return vuexResProcess({ commit }, `${[alterSlideMenuKey]}`, data, error);
     },
 
     async getSlideMenuContent({ commit }, payload) {
       const params = new URLSearchParams();
       params.append('categoryId', payload);
       const { data, error } = await getSlideMenuContent(params);
-      return vuexResProcess({ commit }, alterSlideMenuContent, data, error);
+      return vuexResProcess({ commit }, `${[alterSlideMenuContent]}`, data, error);
     },
 
     async getListProductInfo({ commit }) {
@@ -109,7 +109,7 @@ export default {
       params.append('productCurrent', 1);
       params.append('productSize', 5);
       const { data, error } = await getListProductInfo(params);
-      return vuexResProcess({ commit }, alterListProductInfo, data, error);
+      return vuexResProcess({ commit }, `${[alterListProductInfo]}`, data, error);
     },
   },
 };

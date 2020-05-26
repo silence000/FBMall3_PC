@@ -25,7 +25,7 @@ export default new Vuex.Store({
     userId: sessionStorage.getItem('userId'), // 用户ID
     accessToken: sessionStorage.getItem('accessToken'), // 访问Token
     refreshToken: sessionStorage.getItem('refreshToken'), // 刷新Token
-    pageTitle: '',
+    pageTitle: 'FBMall3',
   },
   mutations: {
     [alterUsername](state, payload) {
@@ -40,7 +40,7 @@ export default new Vuex.Store({
 
     [alterAccessToken](state, payload) {
       state.accessToken = payload;
-      sessionStorage.setItem('alterAccessToken', payload);
+      sessionStorage.setItem('accessToken', payload);
     },
 
     [alterRefreshToken](state, payload) {

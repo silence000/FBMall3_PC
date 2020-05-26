@@ -59,6 +59,14 @@
   </div>
 </template>
 <script>
+import {
+  alterProductPage,
+  alterMyOrdersPage,
+  alterMyCartPage,
+  alterPageTitle,
+  alterUsername,
+  alterUserpass,
+} from '../../store/mutationsType';
 import SwitchRouter from '../../assets/util/SwitchRouter';
 import TopNav from '../../components/topNav.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -69,7 +77,7 @@ export default {
     TopNav, FooterNav, Logo,
   },
   mounted() {
-    this.$store.commit('alterPageTitle', '用户登录');
+    this.$store.commit(`${[alterPageTitle]}`, '用户登录');
   },
   data() {
     return {
@@ -82,7 +90,7 @@ export default {
         return this.$store.state.registerLogin.username;
       },
       set(val) {
-        this.$store.commit('registerLogin/alterUsername', val);
+        this.$store.commit(`registerLogin/${[alterUsername]}`, val);
       },
     },
 
@@ -91,7 +99,7 @@ export default {
         return this.$store.state.registerLogin.userpass;
       },
       set(val) {
-        this.$store.commit('registerLogin/alterUserpass', val);
+        this.$store.commit(`registerLogin/${[alterUserpass]}`, val);
       },
     },
 
@@ -119,6 +127,37 @@ export default {
         .then((data) => {
           if (data === 'success') {
             this.$message.success('登录成功');
+            // 判断登录时上下文状态
+            // 从商品页跳转
+            if (this.$store.state.registerLogin.productPage !== false) {
+              setTimeout(() => {
+                this.$store.commit(`registerLogin/${[alterProductPage]}`, false); // 初始化标记变量
+              }, 500);
+              this.$router.push({
+                path: '/product',
+                query: {
+                  id: this.$store.state.registerLogin.productPage,
+                },
+              });
+              return;
+            }
+            // 从我的订单跳转
+            if (this.$store.state.registerLogin.myOrdersPage === true) {
+              setTimeout(() => {
+                this.$store.commit(`registerLogin/${[alterMyOrdersPage]}`, false); // 初始化标记变量
+              }, 500);
+              this.$router.push('/order');
+              return;
+            }
+            // 从购物车中跳转
+            if (this.$store.state.registerLogin.myCartPage === true) {
+              setTimeout(() => {
+                this.$store.commit(`registerLogin/${[alterMyCartPage]}`, false); // 初始化标记变量
+              }, 500);
+              this.$router.push('/cart');
+              return;
+            }
+            // 普通注册成功跳转逻辑
             setTimeout(() => {
               this.$router.push('/home');
             }, 1500);

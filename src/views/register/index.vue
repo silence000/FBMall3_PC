@@ -64,6 +64,12 @@
   </div>
 </template>
 <script>
+import {
+  alterPageTitle,
+  alterUsername,
+  alterUserpass,
+  alterUserpass2,
+} from '../../store/mutationsType';
 import RegxVerify from '../../assets/util/RegxVerify';
 import TopNav from '../../components/topNav.vue';
 import HeaderNav from '../../components/headerNav.vue';
@@ -74,7 +80,7 @@ export default {
     TopNav, HeaderNav, FooterNav,
   },
   mounted() {
-    this.$store.commit('alterPageTitle', '用户注册');
+    this.$store.commit(`${[alterPageTitle]}`, '用户注册');
   },
   data() {
     return {};
@@ -85,7 +91,7 @@ export default {
         return this.$store.state.registerLogin.username;
       },
       set(val) {
-        this.$store.commit('registerLogin/alterUsername', val);
+        this.$store.commit(`registerLogin/${[alterUsername]}`, val);
       },
     },
 
@@ -94,7 +100,7 @@ export default {
         return this.$store.state.registerLogin.userpass;
       },
       set(val) {
-        this.$store.commit('registerLogin/alterUserpass', val);
+        this.$store.commit(`registerLogin/${[alterUserpass]}`, val);
       },
     },
 
@@ -103,7 +109,7 @@ export default {
         return this.$store.state.registerLogin.userpass2;
       },
       set(val) {
-        this.$store.commit('registerLogin/alterUserpass2', val);
+        this.$store.commit(`registerLogin/${[alterUserpass2]}`, val);
       },
     },
 
@@ -130,7 +136,7 @@ export default {
             this.$message.success(`${data.msg}`);
             setTimeout(() => {
               this.$router.push('/login');
-            }, 1500);
+            }, 500);
           }
           if (typeof (data.code) !== 'undefined') {
             this.username = '';
