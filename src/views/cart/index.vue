@@ -8,7 +8,7 @@
         <div class="cart">
           <el-table
             ref="multipleTable"
-            :data="tableData"
+            :data="cartLocalData"
             border
             tooltip-effect="dark"
             style="width: 100%"
@@ -57,6 +57,7 @@
                   size="small"
                   v-model="scope.row.number"
                   class="cart__number"
+                  @change="handleStep(scope.row.id, $event)"
                 ></el-input-number>
               </template>
             </el-table-column>
@@ -75,7 +76,7 @@
               width="50">
               <template slot-scope="scope">
                 <el-button
-                  @click.native.prevent="deleteRow(scope.$index, tableData)"
+                  @click.native.prevent="deleteRow(scope.$index, cartLocalData, scope.row.id)"
                   type="text"
                   size="small">
                   <span class="cart__operate">删除</span>
@@ -91,7 +92,7 @@
               size="small"
               type="primary"
               plain
-              @click="toggleSelection([tableData[1], tableData[2]])"
+              @click="toggleSelection([cartData[1], cartData[2]])"
             >全选</el-button>
             <el-button
               class="cart__buttonGroup--left"
@@ -117,7 +118,10 @@
   </div>
 </template>
 <script>
-import { alterPageTitle } from '../../store/mutationsType';
+import {
+  alterPageTitle, alterMyCartPage, alterCartLocalData,
+} from '../../store/mutationsType';
+import { pageMuteResProcess } from '../../assets/util/ResProcess';
 import TopNav from '../../components/topNav.vue';
 import HeaderNav from '../../components/headerNav.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -128,47 +132,50 @@ export default {
   },
   mounted() {
     this.$store.commit(`${[alterPageTitle]}`, '购物车');
+    // 判断用户是否登录
+    if (!this.$store.state.username) {
+      this.$store.commit(`registerLogin/${[alterMyCartPage]}`, true);
+      this.$router.push('/login');
+      return;
+    }
+    this.$store.dispatch('cart/getProductInCart')
+      .then((data) => {
+        this.$store.commit(`cart/${[alterCartLocalData]}`, this.cartResData);
+        pageMuteResProcess(data, '购物车加载失败，请重试');
+      });
   },
+  computed: {
+    cartResData() {
+      return this.$store.getters['cart/filterCartResData'];
+    },
+
+    cartLocalData: {
+      get() {
+        return this.$store.state.cart.cartLocalData;
+      },
+      set(val) {
+        this.$store.commit(`cart/${[alterCartLocalData]}`, val);
+      },
+    },
+  },
+  watch: {},
   data() {
     return {
-      tableData: [
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          originalPrice: '¥ 1200',
-          promotePrice: '¥ 900',
-          total: '¥ 2323',
-          number: '2',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          originalPrice: '¥ 1200',
-          promotePrice: '¥ 900',
-          total: '¥ 2323',
-          number: '2',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          originalPrice: '¥ 1200',
-          promotePrice: '¥ 900',
-          total: '¥ 2323',
-          number: '2',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          originalPrice: '¥ 1200',
-          promotePrice: '¥ 900',
-          total: '¥ 2323',
-          number: '2',
-        },
-      ],
       multipleSelection: [],
     };
   },
   methods: {
+    handleStep(id, currentValue) {
+      const param = {
+        pid: id,
+        num: currentValue,
+      };
+      this.$store.dispatch('cart/updateProductInCart', param)
+        .then((data) => {
+          pageMuteResProcess(data, '商品数量修改失败，请重试');
+        });
+    },
+
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
@@ -178,15 +185,19 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    deleteRow(index, rows) {
+
+    deleteRow(index, rows, id) {
       rows.splice(index, 1);
+      this.$store.dispatch('cart/deleteProductInCart', id)
+        .then((data) => {
+          pageMuteResProcess(data, '商品删除失败，请重试');
+        });
     },
   },
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">

@@ -13,6 +13,7 @@ import registerLogin from './modules/registerLogin';
 import home from './modules/home';
 import product from './modules/product';
 import category from './modules/category';
+import cart from './modules/cart';
 
 Vue.use(Vuex);
 
@@ -56,6 +57,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    registerLogin, home, product, category,
+    registerLogin, home, product, category, cart,
   },
 });

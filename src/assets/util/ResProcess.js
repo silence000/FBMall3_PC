@@ -49,7 +49,7 @@ function pageResProcess(data) {
   }
 }
 
-function pageResProcessNoCommit(data, productId, msgSuccess, msgFail) {
+function pageNoticeResProcess(data, productId, msgSuccess, msgFail) {
   if (typeof (data.code) !== 'undefined') {
     if (data.code === 1) {
       Vue.prototype.$message.success(msgSuccess);
@@ -70,6 +70,28 @@ function pageResProcessNoCommit(data, productId, msgSuccess, msgFail) {
     console.log(data);
   }
 }
+
+function pageMuteResProcess(data, msgFail) {
+  if (typeof (data.code) !== 'undefined') {
+    if (data.code === 1) {
+      // Vue.prototype.$message.success(msgSuccess);
+    }
+    if (data.code === 0) {
+      Vue.prototype.$message.error(msgFail);
+    }
+  } else if (data === 'invalid_token') {
+    Vue.prototype.$message.error('登录状态过期，请重新登录！');
+    sessionStorage.clear();
+    Vue.prototype.$myStore.commit('alterUsername', '');
+    Vue.prototype.$myStore.commit('registerLogin/alterMyCartPage', true);
+    setTimeout(() => {
+      Router.push('/login');
+    }, 500);
+  } else {
+    Vue.prototype.$message.error('请求失败：服务器内部错误或请求超时');
+    console.log(data);
+  }
+}
 export {
-  vuexResProcess, vuexResProcessNoCommit, pageResProcess, pageResProcessNoCommit,
+  vuexResProcess, vuexResProcessNoCommit, pageResProcess, pageNoticeResProcess, pageMuteResProcess,
 };

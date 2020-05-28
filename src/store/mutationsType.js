@@ -39,3 +39,8 @@ export const alterProductReviews = 'alterProductReviews';
 * category.js
 * */
 export const alterCategoryProductInfo = 'alterCategoryProductInfo';
+/*
+* cart.js
+* */
+export const alterCartResData = 'alterCartResData';
+export const alterCartLocalData = 'alterCartLocalData';

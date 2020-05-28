@@ -99,7 +99,7 @@ import {
   alterPageTitle,
   alterProductPage,
 } from '../store/mutationsType';
-import { pageResProcess, pageResProcessNoCommit } from '../assets/util/ResProcess';
+import { pageResProcess, pageNoticeResProcess } from '../assets/util/ResProcess';
 import PriceFix from '../assets/util/PriceFix';
 
 export default {
@@ -186,7 +186,7 @@ export default {
       };
       this.$store.dispatch('product/insertProductInCart', payload)
         .then((data) => {
-          pageResProcessNoCommit(data, this.$route.query.id, '成功加入购物车', '加入购物车失败，请重试');
+          pageNoticeResProcess(data, this.$route.query.id, '成功加入购物车', '加入购物车失败，请重试');
         });
     },
 
