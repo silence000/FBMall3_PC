@@ -51,3 +51,20 @@ export const deleteProductInCart = (params) => Vue.axios({
     }
     return error;
   });
+
+export const commitInCart = (params) => Vue.axios({
+  url: `${ApiURL}/users/p3/commit/cart`,
+  method: 'post',
+  data: params,
+  headers: {
+    Authorization: `Bearer ${Vue.prototype.$myStore.state.accessToken}`,
+  },
+})
+  .then((response) => response)
+  .catch((error) => {
+    console.log(error);
+    if (typeof (error.response) !== 'undefined') {
+      return error.response.data;
+    }
+    return error;
+  });

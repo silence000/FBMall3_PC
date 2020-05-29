@@ -24,14 +24,14 @@
 
         <div class="payment">
           <div class="payment__title">扫一扫付款（元）</div>
-          <div class="payment__money">￥<span v-text="money"></span></div>
+          <div class="payment__money">￥ <span>{{ priceFix(cost) }}</span></div>
           <el-image
             style="width: 195px; height: 256px"
             :src="imgUrl"
             fit="fill"
           ></el-image>
-          <br>
-          <el-button class="payment__button" type="primary">确认支付</el-button>
+          <br><br>
+          <el-button class="payment__button" type="primary" @click="affirmPayment">确认支付</el-button>
         </div>
       </div>
     </div>
@@ -40,6 +40,10 @@
   </div>
 </template>
 <script>
+import {
+  alterPageTitle,
+} from '../../store/mutationsType';
+import PriceFix from '../../assets/util/PriceFix';
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -48,16 +52,30 @@ export default {
   components: {
     TopNav, Logo, FooterNav,
   },
+  created() {
+    this.$store.commit(`${[alterPageTitle]}`, '支付订单');
+  },
   mounted() {},
+  computed: {
+    cost() {
+      return sessionStorage.getItem('cost');
+    },
+  },
+  watch: {},
   data() {
     return {
-      money: '2293.60',
       imgUrl: `${this.$store.state.ImagesServerURL}img/site/alipay2wei.png`,
     };
   },
-  methods: {},
-  computed: {},
-  watch: {},
+  methods: {
+    priceFix(val) {
+      return PriceFix(val);
+    },
+
+    affirmPayment() {
+      this.$router.push('/payment/success');
+    },
+  },
 };
 </script>
 <style scoped lang="scss">

@@ -44,3 +44,7 @@ export const alterCategoryProductInfo = 'alterCategoryProductInfo';
 * */
 export const alterCartResData = 'alterCartResData';
 export const alterCartLocalData = 'alterCartLocalData';
+export const alterSelectedProductsId = 'alterSelectedProductsId';
+export const alterCost = 'alterCost';
+export const alterMultipleSelection = 'alterMultipleSelection';
+export const alterRecInfo = 'alterRecInfo';

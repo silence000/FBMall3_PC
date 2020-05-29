@@ -1,12 +1,17 @@
 import {
   alterCartResData,
   alterCartLocalData,
+  alterSelectedProductsId,
+  alterCost,
+  alterMultipleSelection,
+  alterRecInfo,
 } from '../mutationsType';
 
 import {
   getProductInCart,
   updateProductInCart,
   deleteProductInCart,
+  commitInCart,
 } from '../../service/cart';
 
 import {
@@ -21,6 +26,10 @@ export default {
   state: { // 数据存放
     cartResData: [], // 从服务器中请求的购物车信息
     cartLocalData: [], // Vuex中本地存储的购物车信息
+    selectedProductsId: '', // 用户选中的要购买的商品Id字符串, 以空格分隔
+    multipleSelection: [], // 选中的购物车商品信息
+    cost: 0, // 用户选中商品的总价
+    recInfo: {}, // 收货相关信息
   },
 
   getters: { // 过滤器
@@ -46,6 +55,23 @@ export default {
 
     [alterCartLocalData](state, payload) {
       state.cartLocalData = payload;
+    },
+
+    [alterSelectedProductsId](state, payload) {
+      state.selectedProductsId = payload;
+    },
+
+    [alterCost](state, payload) {
+      state.cost = payload;
+      sessionStorage.setItem('cost', payload);
+    },
+
+    [alterMultipleSelection](state, payload) {
+      state.multipleSelection = payload;
+    },
+
+    [alterRecInfo](state, payload) {
+      state.recInfo = payload;
     },
   },
 
@@ -73,6 +99,14 @@ export default {
       const params = new URLSearchParams();
       params.append('pid', payload);
       const { data, error } = await deleteProductInCart(params);
+      return vuexResProcessNoCommit(data, error);
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    async commitInCart({ commit }, payload) {
+      const params = new URLSearchParams();
+      params.append('productsId', payload);
+      const { data, error } = await commitInCart(params);
       return vuexResProcessNoCommit(data, error);
     },
   },

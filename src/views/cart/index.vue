@@ -35,7 +35,11 @@
             <el-table-column
               label="商品信息">
               <template slot-scope="scope">
-                <span class="cart__productName">{{ scope.row.name }}</span>
+                <span
+                  class="cart__productName"
+                  @click="toProductPage(scope.row.id)"
+                >{{ scope.row.name }}
+                </span>
               </template>
             </el-table-column>
 
@@ -92,20 +96,21 @@
               size="small"
               type="primary"
               plain
-              @click="toggleSelection([cartData[1], cartData[2]])"
+              @click="toggleAllSelection()"
             >全选</el-button>
             <el-button
               class="cart__buttonGroup--left"
               size="small"
-              @click="toggleSelection()"
+              @click="clearSelection()"
             >取消选择</el-button>
 
             <div class="cart__buttonInfo">
               已选商品
-              <span class="cart__buttonInfo--number">0</span>&nbsp;件 合计（不含运费）
-              <span class="cart__buttonInfo--total">¥ 0.00</span>
+              <span class="cart__buttonInfo--number" v-text="sumNumber"></span>&nbsp;件 合计（不含运费）
+              <span class="cart__buttonInfo--total">¥ {{ priceFix(cost) }}</span>
               <el-button
                 type="primary"
+                @click="submitCart"
                 class="cart__buttonInfo--button">结&nbsp;算</el-button>
             </div>
           </div>
@@ -119,9 +124,15 @@
 </template>
 <script>
 import {
-  alterPageTitle, alterMyCartPage, alterCartLocalData,
+  alterPageTitle,
+  alterMyCartPage,
+  alterCartLocalData,
+  alterSelectedProductsId,
+  alterCost,
+  alterMultipleSelection,
 } from '../../store/mutationsType';
 import { pageMuteResProcess } from '../../assets/util/ResProcess';
+import PriceFix from '../../assets/util/PriceFix';
 import TopNav from '../../components/topNav.vue';
 import HeaderNav from '../../components/headerNav.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -145,6 +156,10 @@ export default {
       });
   },
   computed: {
+    cost() {
+      return this.$store.state.cart.cost;
+    },
+
     cartResData() {
       return this.$store.getters['cart/filterCartResData'];
     },
@@ -158,13 +173,41 @@ export default {
       },
     },
   },
-  watch: {},
+  watch: {
+    multipleSelection: {
+      handler() {
+        let cost = 0;
+        let sumNumber = 0;
+        this.multipleSelection.map((item) => {
+          cost = parseFloat(item.promotePrice.replace('¥ ', '')) * parseFloat(item.number) + cost;
+          sumNumber = parseFloat(item.number) + sumNumber;
+          return null;
+        });
+        this.sumNumber = sumNumber;
+        this.$store.commit(`cart/${[alterCost]}`, cost);
+      },
+    },
+  },
   data() {
     return {
-      multipleSelection: [],
+      multipleSelection: [], // 选中商品的数组
+      sumNumber: 0, // 选中的商品总数
     };
   },
   methods: {
+    priceFix(val) {
+      return PriceFix(val);
+    },
+
+    toProductPage(id) {
+      this.$router.push({
+        path: '/product',
+        query: {
+          id,
+        },
+      });
+    },
+
     handleStep(id, currentValue) {
       const param = {
         pid: id,
@@ -176,14 +219,24 @@ export default {
         });
     },
 
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
+    submitCart() {
+      let productsId = '';
+      this.multipleSelection.map((item) => {
+        productsId = `${productsId}${item.id} `;
+        return null;
+      });
+      this.$store.commit(`cart/${[alterSelectedProductsId]}`, productsId.trim());
+      this.$store.commit(`cart/${[alterMultipleSelection]}`, this.multipleSelection);
+      console.log(this.multipleSelection);
+      this.$router.push('/submit');
+    },
+
+    toggleAllSelection() {
+      this.$refs.multipleTable.toggleAllSelection();
+    },
+
+    clearSelection() {
+      this.$refs.multipleTable.clearSelection();
     },
 
     handleSelectionChange(val) {
@@ -219,6 +272,12 @@ export default {
     &__productName {
       font-size: 12px;
       color: $color-text-primary;
+
+      &:hover {
+        cursor: pointer;
+        text-decoration-line: underline;
+        color: $color-primary;
+      }
     }
 
     &__originalPrice {

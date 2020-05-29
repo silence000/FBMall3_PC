@@ -121,7 +121,6 @@ export default {
   },
   watch: {},
   methods: {
-
     onSubmit() {
       if (this.username === '' || this.userpass === '' || this.userpass2 === '') {
         this.$alert('请填写用户名或密码！', '错误', {

@@ -46,6 +46,7 @@
                 class="recAddress__item--input"
                 size="small"
                 v-model="postcode"
+                @change="postcodeRegxVerify"
                 placeholder="如果您不清楚邮政区号，请填写000000"></el-input>
             </div>
 
@@ -68,6 +69,7 @@
                 class="recAddress__item--input"
                 size="small"
                 v-model="recPhone"
+                @change="phoneRegxVerify"
                 placeholder="请输入11位手机号码"></el-input>
             </div>
 
@@ -79,7 +81,7 @@
 
           <template>
             <el-table
-              :data="tableData"
+              :data="multipleSelection"
               :span-method="objectSpanMethod"
               style="width: 100%">
               <el-table-column>
@@ -108,7 +110,7 @@
                 label="单价"
                 width="80">
                 <template slot-scope="scope">
-                  <span class="ordersAffirm__price">{{ scope.row.price }}</span>
+                  <span class="ordersAffirm__price">{{ scope.row.promotePrice }}</span>
                 </template>
               </el-table-column>
 
@@ -164,17 +166,20 @@
           </div>
 
           <div class="remark__total">
-            店铺合计（含运费）：￥&nbsp;<span v-text="total"></span>
+            店铺合计（含运费）：￥&nbsp;<span>{{ priceFix(cost) }}</span>
           </div>
         </div>
 
         <div class="settlement__parent">
           <div class="settlement">
             <div class="settlement__text">
-              实付款：<span class="settlement__money" v-text="total"></span>
+              实付款：<span class="settlement__money">¥ {{ priceFix(cost) }}</span>
             </div>
             <div>
-              <el-button class="settlement__button" type="primary">提交订单</el-button>
+              <el-button
+                class="settlement__button"
+                type="primary"
+                @click="submitOrder">提交订单</el-button>
             </div>
           </div>
         </div>
@@ -185,6 +190,11 @@
   </div>
 </template>
 <script>
+import {
+  alterPageTitle, alterRecInfo,
+} from '../../store/mutationsType';
+import PriceFix from '../../assets/util/PriceFix';
+import RegxVerify from '../../assets/util/RegxVerify';
 import TopNav from '../../components/topNav.vue';
 import FooterNav from '../../components/footerNav.vue';
 import Logo from '../../components/logo.vue';
@@ -193,47 +203,29 @@ export default {
   components: {
     TopNav, FooterNav, Logo,
   },
+  created() {
+    this.$store.commit(`${[alterPageTitle]}`, '确认订单');
+  },
   mounted() {},
+  computed: {
+    multipleSelection() {
+      return this.$store.state.cart.multipleSelection;
+    },
+
+    cost() {
+      return sessionStorage.getItem('cost');
+    },
+  },
+  watch: {},
   data() {
     return {
-      tableData: [
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-      ],
-      recAddress: '',
-      postcode: '',
-      recName: '',
-      recPhone: '',
-      radio: '1',
-      selectValue: '1',
-      remark: '',
-      total: '¥2293.60',
+      recAddress: '', // 收货人详细地址
+      postcode: '', // 邮政编码
+      recName: '', // 收货人姓名
+      recPhone: '', // 收货人手机号码
+      remark: '', // 卖家留言
+      radio: '1', // 单选框
+      selectValue: '1', // 单选框选中的值
       options: [{
         value: '1',
         label: '快递 免邮费',
@@ -242,13 +234,49 @@ export default {
     };
   },
   methods: {
+    priceFix(val) {
+      return PriceFix(val);
+    },
+
+    submitOrder() {
+      if (this.recAddress === '' || this.recName === '' || this.recPhone === '') {
+        this.$alert('请检查收货地址，收货人姓名或手机号码是否已填写！', '错误', {
+          confirmButtonText: '确定',
+        });
+        return;
+      }
+      const recInfo = {
+        recName: this.recName,
+        recPhone: this.recPhone,
+        postcode: this.postcode,
+        recAddress: this.recAddress,
+        remark: this.remark,
+      };
+      this.$store.commit(`cart/${[alterRecInfo]}`, recInfo);
+      this.$router.push('/payment');
+    },
+
+    postcodeRegxVerify() {
+      if (RegxVerify(this.postcode, 'postcode') === false) {
+        this.$alert('请填写正确的邮政编码', '错误', {
+          confirmButtonText: '确定',
+        });
+        this.postcode = '';
+      }
+    },
+
+    phoneRegxVerify() {
+      if (RegxVerify(this.recPhone, 'mobile') === false) {
+        this.$alert('请输入正确的手机号码', '错误', {
+          confirmButtonText: '确定',
+        });
+        this.recPhone = '';
+      }
+    },
+
     objectSpanMethod({
-      row, column, rowIndex, columnIndex,
+      rowIndex, columnIndex,
     }) {
-      console.log(`row: ${row}`);
-      console.log(`column: ${column}`);
-      console.log(`rowIndex: ${rowIndex}`);
-      console.log(`columnIndex: ${columnIndex}`);
       if (columnIndex === 4) {
         if (rowIndex === 0) {
           return {
@@ -267,8 +295,6 @@ export default {
       };
     },
   },
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">

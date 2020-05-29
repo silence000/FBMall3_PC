@@ -9,7 +9,7 @@ export default {
   namespaced: true,
 
   state: { // 数据存放
-    categoryProductInfo: [],
+    categoryProductInfo: [], // 分类数据
   },
 
   getters: { // 过滤器
