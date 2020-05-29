@@ -43,6 +43,7 @@
 import {
   alterPageTitle,
 } from '../../store/mutationsType';
+import { pageMuteResProcess } from '../../assets/util/ResProcess';
 import PriceFix from '../../assets/util/PriceFix';
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
@@ -55,7 +56,11 @@ export default {
   created() {
     this.$store.commit(`${[alterPageTitle]}`, '支付订单');
   },
-  mounted() {},
+  mounted() {
+    if (this.$store.state.cart.multipleSelection) {
+      this.$router.push('/home');
+    }
+  },
   computed: {
     cost() {
       return sessionStorage.getItem('cost');
@@ -73,7 +78,13 @@ export default {
     },
 
     affirmPayment() {
-      this.$router.push('/payment/success');
+      this.$store.dispatch('cart/payOrders', this.$store.state.cart.orderId)
+        .then((data) => {
+          pageMuteResProcess(data, '订单支付提交失败，请重试');
+          if (data.code === 1) {
+            this.$router.push('/payment/success');
+          }
+        });
     },
   },
 };

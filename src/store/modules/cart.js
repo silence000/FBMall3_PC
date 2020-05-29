@@ -4,14 +4,15 @@ import {
   alterSelectedProductsId,
   alterCost,
   alterMultipleSelection,
-  alterRecInfo,
+  alterOrderId,
 } from '../mutationsType';
 
 import {
   getProductInCart,
   updateProductInCart,
   deleteProductInCart,
-  commitInCart,
+  insertOrder,
+  payOrders,
 } from '../../service/cart';
 
 import {
@@ -29,11 +30,14 @@ export default {
     selectedProductsId: '', // 用户选中的要购买的商品Id字符串, 以空格分隔
     multipleSelection: [], // 选中的购物车商品信息
     cost: 0, // 用户选中商品的总价
-    recInfo: {}, // 收货相关信息
+    orderId: sessionStorage.getItem('orderId'), // 订单号
   },
 
   getters: { // 过滤器
     filterCartResData(state, getters, rootState) {
+      if (!state.cartResData) {
+        return [];
+      }
       return state.cartResData.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.total = `¥ ${PriceFix(item.promotePrice * item.number)}`;
@@ -70,8 +74,9 @@ export default {
       state.multipleSelection = payload;
     },
 
-    [alterRecInfo](state, payload) {
-      state.recInfo = payload;
+    [alterOrderId](state, payload) {
+      state.orderId = payload;
+      sessionStorage.setItem('orderId', payload);
     },
   },
 
@@ -103,10 +108,16 @@ export default {
     },
 
     // eslint-disable-next-line no-unused-vars
-    async commitInCart({ commit }, payload) {
+    async insertOrder({ commit }, payload) {
+      const { data, error } = await insertOrder(payload);
+      return vuexResProcessNoCommit(data, error);
+    },
+
+    // eslint-disable-next-line no-unused-vars
+    async payOrders({ commit }, payload) {
       const params = new URLSearchParams();
-      params.append('productsId', payload);
-      const { data, error } = await commitInCart(params);
+      params.append('oid', payload);
+      const { data, error } = await payOrders(params);
       return vuexResProcessNoCommit(data, error);
     },
   },

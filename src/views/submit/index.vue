@@ -191,8 +191,9 @@
 </template>
 <script>
 import {
-  alterPageTitle, alterRecInfo,
+  alterPageTitle, alterOrderId,
 } from '../../store/mutationsType';
+import { pageMuteResProcess } from '../../assets/util/ResProcess';
 import PriceFix from '../../assets/util/PriceFix';
 import RegxVerify from '../../assets/util/RegxVerify';
 import TopNav from '../../components/topNav.vue';
@@ -206,7 +207,11 @@ export default {
   created() {
     this.$store.commit(`${[alterPageTitle]}`, '确认订单');
   },
-  mounted() {},
+  mounted() {
+    if (this.$store.state.cart.multipleSelection) {
+      this.$router.push('/home');
+    }
+  },
   computed: {
     multipleSelection() {
       return this.$store.state.cart.multipleSelection;
@@ -251,9 +256,17 @@ export default {
         postcode: this.postcode,
         recAddress: this.recAddress,
         remark: this.remark,
+        productsId: this.$store.state.cart.selectedProductsId,
       };
-      this.$store.commit(`cart/${[alterRecInfo]}`, recInfo);
-      this.$router.push('/payment');
+      this.$store.dispatch('cart/insertOrder', recInfo)
+        .then((data) => {
+          // 此处返回订单号并存储进Vuex
+          this.$store.commit(`cart/${[alterOrderId]}`, data.data);
+          pageMuteResProcess(data, '订单提交失败，请重试');
+        });
+      if (this.$store.state.cart.orderId) { // 订单提交失败时不做跳转
+        this.$router.push('/payment');
+      }
     },
 
     postcodeRegxVerify() {

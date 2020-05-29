@@ -34,6 +34,9 @@ export default {
 
   getters: { // 过滤器
     filterImageSmallUrl(state, getters, rootState) {
+      if (!state.imageSmallUrl) {
+        return [];
+      }
       return state.imageSmallUrl.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.link = `${rootState.ImagesServerURL}img/productSingle_middle/${item.link}.jpg`;
@@ -42,6 +45,9 @@ export default {
     },
 
     filterImageExtraUrl(state, getters, rootState) {
+      if (!state.imageExtraUrl) {
+        return [];
+      }
       return state.imageExtraUrl.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.link = `${rootState.ImagesServerURL}img/productDetail/${item.link}.jpg`;
@@ -50,6 +56,9 @@ export default {
     },
 
     filterProductExtra(state) {
+      if (!state.productExtra) {
+        return [];
+      }
       return state.productExtra.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.descKey += '：';
@@ -58,6 +67,9 @@ export default {
     },
 
     filterProductReviews(state) {
+      if (!state.productReviews) {
+        return [];
+      }
       return state.productReviews.map((item) => {
         const placeholder = '*';
         // eslint-disable-next-line no-param-reassign

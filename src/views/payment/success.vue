@@ -46,6 +46,7 @@
   </div>
 </template>
 <script>
+import { alterMultipleSelection, alterPageTitle } from '../../store/mutationsType';
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -54,7 +55,13 @@ export default {
   components: {
     TopNav, Logo, FooterNav,
   },
-  mounted() {},
+  mounted() {
+    this.$store.commit(`${[alterPageTitle]}`, '订单支付成功');
+    if (this.$store.state.cart.multipleSelection) {
+      this.$router.push('/home');
+    }
+    this.$store.commit(`cart/${[alterMultipleSelection]}`, '');
+  },
   data() {
     return {
       recAddress: '测试用的收货地址',

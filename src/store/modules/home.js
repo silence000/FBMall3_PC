@@ -26,6 +26,9 @@ export default {
 
   getters: { // 过滤器
     filterSlideMenuContent(state) {
+      if (!state.slideMenuContent) {
+        return [];
+      }
       return state.slideMenuContent.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.subTitle = item.subTitle.replace(/[ ]/g, '\b \b \b \b \b \b \b');
@@ -34,6 +37,9 @@ export default {
     },
 
     filterListProductInfo(state, getters, rootState) {
+      if (!state.listProductInfo) {
+        return [];
+      }
       return state.listProductInfo.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.content.map((atom) => {

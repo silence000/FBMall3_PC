@@ -227,7 +227,6 @@ export default {
       });
       this.$store.commit(`cart/${[alterSelectedProductsId]}`, productsId.trim());
       this.$store.commit(`cart/${[alterMultipleSelection]}`, this.multipleSelection);
-      console.log(this.multipleSelection);
       this.$router.push('/submit');
     },
 

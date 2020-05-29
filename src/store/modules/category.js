@@ -14,6 +14,9 @@ export default {
 
   getters: { // 过滤器
     filterCategoryProductInfo(state, getters, rootState) {
+      if (!state.categoryProductInfo) {
+        return [];
+      }
       return state.categoryProductInfo.map((item) => {
         // eslint-disable-next-line no-param-reassign
         item.imgUrl = `${rootState.ImagesServerURL}img/productSingle_middle/${item.imgUrl}.jpg`;
