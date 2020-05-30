@@ -48,3 +48,8 @@ export const alterSelectedProductsId = 'alterSelectedProductsId';
 export const alterCost = 'alterCost';
 export const alterMultipleSelection = 'alterMultipleSelection';
 export const alterOrderId = 'alterOrderId';
+/*
+* orders.js
+* */
+export const alterOrdersResData = 'alterOrdersResData';
+export const alterLoadingOrders = 'alterLoadingOrders';

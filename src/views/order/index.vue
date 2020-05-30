@@ -37,7 +37,7 @@
                 width="55">
               </el-table-column>
               <el-table-column
-                label="实付款"
+                label="订单总价（元）"
                 width="120">
               </el-table-column>
               <el-table-column
@@ -49,7 +49,7 @@
         </div>
         <br>
 
-        <div v-for="tableData in tableDataList" :key="tableData.index">
+        <div v-for="tableData in ordersResData" :key="tableData[0].id" v-loading="loadingOrders">
           <div class="orderList">
           <template>
             <el-table
@@ -59,21 +59,24 @@
               style="width: 100%">
               <el-table-column>
                 <template slot="header">
-                  订单日期：
-                  <span v-text="tableData[0].orderDate"></span>
-                  &nbsp;订单号：
-                  <span v-text="tableData[0].orderSeries"></span>
+                  <div class="orderList__header">
+                    <span class="orderList__header--bold" v-text="tableData[0].createDate"></span>
+                    <span class="orderList__header--indent">订单号：</span>
+                    <span v-text="tableData[0].orderCode"></span>
+                  </div>
                 </template>
 
                 <template slot-scope="scope">
                   <div class="orderList__nameParent">
                     <el-image
-                      style="width: 50px; height: 50px"
+                      style="width: 80px; height: 80px"
                       class="orderList__image"
                       :src=scope.row.imgUrl
                       fit="fill"
                     ></el-image>
-                    <span class="orderList__name">{{ scope.row.name }}</span>
+                    <span
+                      class="orderList__name"
+                      @click="toProductPage(scope.row.id)">{{ scope.row.name }}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -103,11 +106,11 @@
               </el-table-column>
 
               <el-table-column
-                label="元"
+                label="实付款"
                 width="120">
-                <template slot-scope="scope">
+                <template>
                   <div class="orderList__totalParent">
-                    <span class="orderList__total">{{ scope.row.promotePrice }}</span>
+                    <span class="orderList__total" v-text="tableData[0].sumPrice"></span>
                     <br>
                     <span class="orderList__postCost">(含运费：￥ 0.00)</span>
                   </div>
@@ -118,6 +121,31 @@
                 width="120">
                 <template slot="header">
                   <el-link type="info">删除该订单</el-link>
+                </template>
+                <template>
+                  <span class="orderList__operation" v-text="tableData[0].statusDesc"></span>
+                  <br>
+                  <div class="orderList__buttonGroup">
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      v-if="switchOperateButtons(tableData[0].statusCode, 1)"
+                    >付款</el-button>
+                    <el-button
+                      type="danger"
+                      size="mini"
+                      v-if="switchOperateButtons(tableData[0].statusCode, 2)"
+                    >催卖家发货</el-button>
+                    <el-button
+                      type="success"
+                      size="mini"
+                      v-if="switchOperateButtons(tableData[0].statusCode, 3)"
+                    >确认收货</el-button>
+                    <el-button
+                      size="mini"
+                      v-if="switchOperateButtons(tableData[0].statusCode, 4)"
+                    >评价</el-button>
+                  </div>
                 </template>
               </el-table-column>
             </el-table>
@@ -133,6 +161,10 @@
   </div>
 </template>
 <script>
+import {
+  alterPageTitle,
+} from '../../store/mutationsType';
+import { pageMuteResProcess } from '../../assets/util/ResProcess';
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -141,109 +173,98 @@ export default {
   components: {
     TopNav, Logo, FooterNav,
   },
+  created() {
+    this.$store.commit(`${[alterPageTitle]}`, '我的订单');
+    this.$store.dispatch('orders/getOrders', 0)
+      .then((data) => {
+        pageMuteResProcess(data, '订单信息获取失败，请重试');
+      });
+  },
   mounted() {},
+  computed: {
+    ordersResData() {
+      return this.$store.getters['orders/filterOrdersResData'];
+    },
+
+    loadingOrders() {
+      return this.$store.state.orders.loadingOrders;
+    },
+  },
+  watch: {},
   data() {
     return {
       imgUrl: `${this.$store.state.ImagesServerURL}img/site/orderItemTmall.png`,
       activeIndex: '1',
-      tableDataList: [
-        [
-          {
-            orderDate: '2020-05-16 00:48:08',
-            orderSeries: '20200516004808745737',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-        ],
-        [
-          {
-            orderDate: '2020-05-16 00:48:08',
-            orderSeries: '20200516004808745737',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-          {
-            imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-            name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-            originalPrice: '¥ 1200',
-            promotePrice: '¥ 900',
-            total: '¥ 2323',
-            number: '2',
-          },
-        ],
-      ],
+      tableDataList: [],
     };
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key) {
+      if (this.activeIndex !== key) {
+        this.activeIndex = key;
+        if (key === '1') {
+          this.$store.dispatch('orders/getOrders', 0)
+            .then((data) => {
+              pageMuteResProcess(data, '订单信息获取失败，请重试');
+            });
+        }
+        if (key === '2') {
+          this.$store.dispatch('orders/getOrders', 1)
+            .then((data) => {
+              pageMuteResProcess(data, '订单信息获取失败，请重试');
+            });
+        }
+        if (key === '3') {
+          this.$store.dispatch('orders/getOrders', 2)
+            .then((data) => {
+              pageMuteResProcess(data, '订单信息获取失败，请重试');
+            });
+        }
+        if (key === '4') {
+          this.$store.dispatch('orders/getOrders', 3)
+            .then((data) => {
+              pageMuteResProcess(data, '订单信息获取失败，请重试');
+            });
+        }
+        if (key === '5') {
+          this.$store.dispatch('orders/getOrders', 4)
+            .then((data) => {
+              pageMuteResProcess(data, '订单信息获取失败，请重试');
+            });
+        }
+      }
     },
-    objectSpanMethod({
-      row, column, rowIndex, columnIndex,
-    }) {
-      console.log(`row: ${row}`);
-      console.log(`column: ${column}`);
-      console.log(`rowIndex: ${rowIndex}`);
-      console.log(`columnIndex: ${columnIndex}`);
+
+    toProductPage(id) {
+      this.$router.push({
+        path: '/product',
+        query: {
+          id,
+        },
+      });
+    },
+
+    switchOperateButtons(status, type) {
+      if (status === '1' && type === 1) {
+        return true;
+      }
+      if (status === '2' && type === 2) {
+        return true;
+      }
+      if (status === '3' && type === 3) {
+        return true;
+      }
+      return status === '4' && type === 4;
+    },
+
+    objectSpanMethod({ rowIndex, columnIndex }) {
       if (rowIndex === 0) {
         return {
           rowspan: 0,
           colspan: 0,
         };
       }
-      if (columnIndex === 2 || columnIndex === 3 || columnIndex === 4) {
+      if (columnIndex === 3 || columnIndex === 4) {
         if (rowIndex === 1) {
           return {
             rowspan: 4,
@@ -261,8 +282,6 @@ export default {
       };
     },
   },
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">
@@ -287,6 +306,27 @@ export default {
   }
 
   .orderList {
+    border: 2px solid $color-white;
+
+    &:hover {
+      border: 2px solid $color-primary;
+    }
+
+    &__header {
+      font-size: 12px;
+      font-weight: 500;
+
+      &--bold {
+        font-weight: 700;
+        color: $color-text-primary;
+      }
+
+      &--indent {
+        display: inline-block;
+        margin-left: 15px;
+      }
+    }
+
     &__nameParent {
       overflow: hidden;
     }
@@ -300,6 +340,11 @@ export default {
       margin-left: 10px;
       width: 400px;
       font-size: 12px;
+
+      &:hover {
+        cursor: pointer;
+        color: $color-primary;
+      }
     }
 
     &__originalPrice {
@@ -331,6 +376,17 @@ export default {
     &__postCost {
       font-size: 12px;
       color: $color-text-secondary;
+    }
+
+    &__operation {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    &__buttonGroup {
+      text-align: center;
     }
   }
 </style>
