@@ -130,20 +130,24 @@
                       type="primary"
                       size="mini"
                       v-if="switchOperateButtons(tableData[0].statusCode, 1)"
+                      @click="payment(tableData[0].id)"
                     >付款</el-button>
                     <el-button
                       type="danger"
                       size="mini"
                       v-if="switchOperateButtons(tableData[0].statusCode, 2)"
+                      @click="pressOrder(tableData[0].id)"
                     >催卖家发货</el-button>
                     <el-button
                       type="success"
                       size="mini"
                       v-if="switchOperateButtons(tableData[0].statusCode, 3)"
+                      @click="confirmReceiving(tableData[0].id)"
                     >确认收货</el-button>
                     <el-button
                       size="mini"
                       v-if="switchOperateButtons(tableData[0].statusCode, 4)"
+                      @click="dialogTableVisible = true"
                     >评价</el-button>
                   </div>
                 </template>
@@ -151,7 +155,20 @@
             </el-table>
           </template>
           <br>
+            <!-- todo 选择需要评价的商品 -->
+            <div>
+              <el-dialog title="请选择要评价的商品" :visible.sync="dialogTableVisible">
+                <el-table :data="tableData">
+                  <el-table-column label="商品名">
+                    <template slot-scope="scope">
+                      <span>{{ scope.row.name }}</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-dialog>
+            </div>
         </div>
+
         </div>
 
       </div>
@@ -163,6 +180,7 @@
 <script>
 import {
   alterPageTitle,
+  alterOrderId,
 } from '../../store/mutationsType';
 import { pageMuteResProcess } from '../../assets/util/ResProcess';
 import TopNav from '../../components/topNav.vue';
@@ -170,6 +188,7 @@ import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
 
 export default {
+  inject: ['reload'],
   components: {
     TopNav, Logo, FooterNav,
   },
@@ -195,10 +214,54 @@ export default {
     return {
       imgUrl: `${this.$store.state.ImagesServerURL}img/site/orderItemTmall.png`,
       activeIndex: '1',
-      tableDataList: [],
+      dialogTableVisible: false,
+      gridData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+      }],
     };
   },
   methods: {
+    payment(id) {
+      this.$store.commit(`cart/${[alterOrderId]}`, id);
+      this.$router.push('/payment');
+    },
+
+    pressOrder(id) {
+      this.$store.dispatch('orders/pressOrder', id)
+        .then((data) => {
+          pageMuteResProcess(data, '催卖家发货失败，请重试');
+          if (data.code) {
+            if (data.code === 1) {
+              this.reload();
+              this.$message.success('卖家已极速发货');
+            }
+          }
+        });
+    },
+
+    confirmReceiving(id) {
+      this.$router.push({
+        path: '/order/confirm',
+        query: {
+          id,
+        },
+      });
+    },
+
     handleSelect(key) {
       if (this.activeIndex !== key) {
         this.activeIndex = key;

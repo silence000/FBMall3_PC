@@ -25,7 +25,7 @@
 
           <template>
             <el-table
-              :data="tableData"
+              :data="orderItemData"
               border
               style="width: 100%">
               <el-table-column
@@ -47,7 +47,7 @@
                 label="单价"
                 width="80">
                 <template slot-scope="scope">
-                  <span class="confirmOrder__price">{{ scope.row.price }}</span>
+                  <span class="confirmOrder__price">{{ scope.row.promotePrice }}</span>
                 </template>
               </el-table-column>
 
@@ -63,7 +63,9 @@
                 label="小计"
                 width="100">
                 <template slot-scope="scope">
-                  <span class="confirmOrder__total">{{ scope.row.total }}</span>
+                  <span class="confirmOrder__total">
+                    ¥ {{ priceFix(scope.row.originalPrice) }}
+                  </span>
                 </template>
               </el-table-column>
 
@@ -77,14 +79,17 @@
           </template>
 
           <div class="confirmOrder__payMoney">
-            实付款：<span class="confirmOrder__payMoney--number" v-text="payMoney"></span>
+            实付款：
+            <span class="confirmOrder__payMoney--number">
+              ¥ {{ priceFix(orderDetails.sumPrice) }}
+            </span>
           </div>
         </div>
 
         <div class="orderInfo">
           <div class="orderInfo__item">
             <span class="orderInfo__item--key">订单编号：</span>
-            <span class="orderInfo__item--value" v-text="orderSeries"></span>
+            <span class="orderInfo__item--value" v-text="orderDetails.orderCode"></span>
           </div>
           <div class="orderInfo__item">
             <span class="orderInfo__item--key">卖家昵称：</span>
@@ -93,21 +98,21 @@
           <div class="orderInfo__item">
             <span class="orderInfo__item--key">收货地址：</span>
             <span class="orderInfo__item--value">
-              <span v-text="recAddress"></span>，
-              <span v-text="recName"></span>，
-              <span v-text="recPhone"></span>，
-              <span v-text="recPostcode"></span>，
+              <span v-text="orderDetails.address"></span>，
+              <span v-text="orderDetails.receiver"></span>，
+              <span v-text="orderDetails.mobile"></span>，
+              <span v-text="orderDetails.post"></span>，
             </span>
           </div>
           <div class="orderInfo__item">
             <span class="orderInfo__item--key">成交时间：</span>
-            <span class="orderInfo__item--value" v-text="orderDatetime"></span>
+            <span class="orderInfo__item--value" v-text="orderDetails.payDate"></span>
           </div>
         </div>
 
         <div class="orderConfirm">
           <div class="orderConfirm__title">请收到货后，再确认收货！否则您可能钱货两空！</div>
-          <el-button type="primary">确认收货</el-button>
+          <el-button type="primary" @click="confirmOrder()">确认收货</el-button>
         </div>
       </div>
     </div>
@@ -116,6 +121,9 @@
   </div>
 </template>
 <script>
+import { alterPageTitle } from '../../store/mutationsType';
+import { pageMuteResProcess } from '../../assets/util/ResProcess';
+import PriceFix from '../../assets/util/PriceFix';
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -124,51 +132,44 @@ export default {
   components: {
     TopNav, Logo, FooterNav,
   },
-  mounted() {},
-  data() {
-    return {
-      payMoney: '¥2293,60',
-      orderDatetime: '2020-05-16 17:17:30',
-      orderSeries: '202005161717302198358',
-      recAddress: '测试地址',
-      recName: '张三',
-      recPhone: '12312341234',
-      recPostcode: '123456',
-      tableData: [
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-        {
-          imgUrl: `${this.$store.state.ImagesServerURL}img/productSingle_middle/1928.jpg`,
-          name: '雅居汇欧式沙发组合实木雕花客厅高档奢华大户型住宅家具布艺沙发',
-          price: '¥ 900',
-          number: '1',
-          total: '¥ 900',
-        },
-      ],
-    };
+  created() {
+    this.$store.commit(`${[alterPageTitle]}`, '确认收货');
+    this.$store.dispatch('orders/getOneOrder', this.$route.query.id)
+      .then((data) => {
+        pageMuteResProcess(data, '订单信息获取失败，请重试');
+      });
   },
-  methods: {},
-  computed: {},
+  mounted() {},
+  computed: {
+    orderItemData() {
+      return this.$store.getters['orders/filterOrderItemData'];
+    },
+
+    orderDetails() {
+      return this.$store.getters['orders/filterOrderDetails'];
+    },
+  },
   watch: {},
+  data() {
+    return {};
+  },
+  methods: {
+    priceFix(val) {
+      return PriceFix(val);
+    },
+
+    confirmOrder() {
+      this.$store.dispatch('orders/confirmOrders', this.$route.query.id)
+        .then((data) => {
+          pageMuteResProcess(data, '收货失败，请重试');
+          if (data.code) {
+            if (data.code === 1) {
+              this.$router.push('/order/confirm/success');
+            }
+          }
+        });
+    },
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -220,7 +221,8 @@ export default {
     }
 
     &__total {
-      font-size: 18px;
+      font-size: 16px;
+      font-weight: 700;
     }
 
     &__number {
@@ -239,6 +241,7 @@ export default {
 
       &--number {
         color: $color-primary;
+        font-weight: 700;
       }
     }
   }

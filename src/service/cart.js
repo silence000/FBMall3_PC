@@ -4,7 +4,7 @@ import { ApiURL } from '../store/mutationsType';
 export const getProductInCart = (params) => Vue.axios({
   url: `${ApiURL}/users/p3/get/cart`,
   method: 'get',
-  data: params,
+  params,
   headers: {
     Authorization: `Bearer ${Vue.prototype.$myStore.state.accessToken}`,
   },

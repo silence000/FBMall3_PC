@@ -57,7 +57,7 @@ export default {
   },
   mounted() {
     this.$store.commit(`${[alterPageTitle]}`, '订单支付成功');
-    if (this.$store.state.cart.multipleSelection) {
+    if (!this.$store.state.cart.orderId) {
       this.$router.push('/home');
     }
     this.$store.commit(`cart/${[alterMultipleSelection]}`, '');

@@ -20,6 +20,7 @@
   </div>
 </template>
 <script>
+import { alterPageTitle } from '../../store/mutationsType';
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
@@ -28,13 +29,18 @@ export default {
   components: {
     TopNav, Logo, FooterNav,
   },
-  mounted() {},
+  mounted() {
+    this.$store.commit(`${[alterPageTitle]}`, '交易成功');
+    // 调整页面位置到页面的最上方
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  },
+  computed: {},
+  watch: {},
   data() {
     return {};
   },
   methods: {},
-  computed: {},
-  watch: {},
 };
 </script>
 <style scoped lang="scss">

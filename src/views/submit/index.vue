@@ -208,7 +208,7 @@ export default {
     this.$store.commit(`${[alterPageTitle]}`, '确认订单');
   },
   mounted() {
-    if (this.$store.state.cart.multipleSelection) {
+    if (!this.$store.state.cart.multipleSelection) {
       this.$router.push('/home');
     }
   },

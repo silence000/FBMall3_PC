@@ -18,6 +18,26 @@ function vuexResProcess({ commit }, commitMutations, data, error) {
   return response;
 }
 
+function vuexResProcessExtra({ commit }, commitMutations1, commitMutations2, data, error) {
+  let response = '';
+  if (typeof (data) !== 'undefined') {
+    if (typeof (data.data) !== 'undefined') {
+      commit(commitMutations1, data.data);
+    }
+    if (typeof (data.extra) !== 'undefined') {
+      commit(commitMutations2, data.extra);
+    }
+    response = data;
+  }
+  if (typeof (error) !== 'undefined') {
+    response = error;
+  }
+  if (typeof (data) === 'undefined' && typeof (error) === 'undefined') {
+    response = 'no_response';
+  }
+  return response;
+}
+
 function vuexResProcessNoCommit(data, error) {
   let response = '';
   if (typeof (data) !== 'undefined') {
@@ -93,5 +113,10 @@ function pageMuteResProcess(data, msgFail) {
   }
 }
 export {
-  vuexResProcess, vuexResProcessNoCommit, pageResProcess, pageNoticeResProcess, pageMuteResProcess,
+  vuexResProcess,
+  vuexResProcessExtra,
+  vuexResProcessNoCommit,
+  pageResProcess,
+  pageNoticeResProcess,
+  pageMuteResProcess,
 };

@@ -53,3 +53,5 @@ export const alterOrderId = 'alterOrderId';
 * */
 export const alterOrdersResData = 'alterOrdersResData';
 export const alterLoadingOrders = 'alterLoadingOrders';
+export const alterOrderItemData = 'alterOrderItemData';
+export const alterOrderDetails = 'alterOrderDetails';
