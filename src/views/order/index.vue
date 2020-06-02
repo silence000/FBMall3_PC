@@ -130,7 +130,7 @@
                       type="primary"
                       size="mini"
                       v-if="switchOperateButtons(tableData[0].statusCode, 1)"
-                      @click="payment(tableData[0].id)"
+                      @click="payment(tableData[0].id, tableData[0].sumPrice)"
                     >付款</el-button>
                     <el-button
                       type="danger"
@@ -147,7 +147,7 @@
                     <el-button
                       size="mini"
                       v-if="switchOperateButtons(tableData[0].statusCode, 4)"
-                      @click="dialogTableVisible = true"
+                      @click="commentOrder(tableData[0].id)"
                     >评价</el-button>
                   </div>
                 </template>
@@ -155,18 +155,22 @@
             </el-table>
           </template>
           <br>
-            <!-- todo 选择需要评价的商品 -->
-            <div>
-              <el-dialog title="请选择要评价的商品" :visible.sync="dialogTableVisible">
-                <el-table :data="tableData">
-                  <el-table-column label="商品名">
+
+            <div class="reviewsSelect" v-loading="loadingTables">
+              <el-dialog title="请选择要评价的商品" width="600px" :visible.sync="dialogTableVisible">
+                <el-table :data="orderItemData">
+                  <el-table-column label="我的宝贝">
                     <template slot-scope="scope">
-                      <span>{{ scope.row.name }}</span>
+                      <span
+                        class="reviewsSelect__item"
+                        @click="toReviewPage(scope.row.id)"
+                        v-text="scope.row.name"></span>
                     </template>
                   </el-table-column>
                 </el-table>
               </el-dialog>
             </div>
+
         </div>
 
         </div>
@@ -181,6 +185,7 @@
 import {
   alterPageTitle,
   alterOrderId,
+  alterLoadingTables,
 } from '../../store/mutationsType';
 import { pageMuteResProcess } from '../../assets/util/ResProcess';
 import TopNav from '../../components/topNav.vue';
@@ -205,8 +210,16 @@ export default {
       return this.$store.getters['orders/filterOrdersResData'];
     },
 
+    orderItemData() {
+      return this.$store.getters['orders/filterOrderItemData'];
+    },
+
     loadingOrders() {
       return this.$store.state.orders.loadingOrders;
+    },
+
+    loadingTables() {
+      return this.$store.state.orders.loadingTables;
     },
   },
   watch: {},
@@ -215,27 +228,31 @@ export default {
       imgUrl: `${this.$store.state.ImagesServerURL}img/site/orderItemTmall.png`,
       activeIndex: '1',
       dialogTableVisible: false,
-      gridData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-      }],
     };
   },
   methods: {
-    payment(id) {
+    toReviewPage(id) {
+      this.$router.push({
+        path: '/review',
+        query: {
+          id,
+        },
+      });
+    },
+
+    commentOrder(id) {
+      sessionStorage.setItem('completeOrderID', id); // 放置即将完成评价的订单号
+      this.dialogTableVisible = true;
+      this.$store.commit(`orders/${[alterLoadingTables]}`, true);
+      this.$store.dispatch('orders/getOneOrder', id)
+        .then((data) => {
+          pageMuteResProcess(data, '订单信息获取失败，请重试');
+          this.$store.commit(`orders/${[alterLoadingTables]}`, false);
+        });
+    },
+
+    payment(id, sum) {
+      sessionStorage.setItem('cost', sum.replace('¥ ', ''));
       this.$store.commit(`cart/${[alterOrderId]}`, id);
       this.$router.push('/payment');
     },
@@ -450,6 +467,15 @@ export default {
 
     &__buttonGroup {
       text-align: center;
+    }
+  }
+
+  .reviewsSelect {
+    &__item {
+      &:hover {
+        cursor: pointer;
+        color: $color-primary;
+      }
     }
   }
 </style>

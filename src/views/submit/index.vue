@@ -263,6 +263,12 @@ export default {
           // 此处返回订单号并存储进Vuex
           this.$store.commit(`cart/${[alterOrderId]}`, data.data);
           pageMuteResProcess(data, '订单提交失败，请重试');
+          if (data.code === 1) {
+            sessionStorage.setItem('recName', this.recName);
+            sessionStorage.setItem('recPhone', this.recPhone);
+            sessionStorage.setItem('postcode', this.postcode);
+            sessionStorage.setItem('recAddress', this.recAddress);
+          }
         });
       if (this.$store.state.cart.orderId) { // 订单提交失败时不做跳转
         this.$router.push('/payment');

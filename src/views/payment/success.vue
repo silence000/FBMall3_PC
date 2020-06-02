@@ -14,19 +14,25 @@
           </div>
 
           <div class="successDiv__Content">
-            <div class="successDiv__Content--item">● 收货地址：
+            <div class="successDiv__Content--item successDiv__Content--fix">● 收货地址：
               <span v-text="recAddress"></span>
             </div>
-            <div class="successDiv__Content--item">● 实付款：
-              <span class="successDiv__Content--money" v-text="total"></span>
+            <div class="successDiv__Content--item">● 实付款：¥
+              <span class="successDiv__Content--money" v-text="priceFix(total)"></span>
             </div>
             <div class="successDiv__Content--item">●&nbsp;
               <span v-text="etaTime"></span></div>
             <div class="successDiv__Content--item">
               <span class="successDiv__Content--text">您可以</span>
               <span class="successDiv__Content--linkParent">
-                <el-link class="successDiv__Content--link" type="success">查看已买到的宝贝</el-link>
-                <el-link class="successDiv__Content--link" type="success">查看交易详情</el-link>
+                <el-link
+                  class="successDiv__Content--link"
+                  type="success"
+                  @click="toOrdersPage">查看已买到的宝贝</el-link>
+                <el-link
+                  class="successDiv__Content--link"
+                  type="success"
+                  @click="toOrdersPage">查看交易详情</el-link>
               </span>
             </div>
             <el-divider></el-divider>
@@ -50,6 +56,7 @@ import { alterMultipleSelection, alterPageTitle } from '../../store/mutationsTyp
 import TopNav from '../../components/topNav.vue';
 import Logo from '../../components/logo.vue';
 import FooterNav from '../../components/footerNav.vue';
+import PriceFix from '../../assets/util/PriceFix';
 
 export default {
   components: {
@@ -64,12 +71,21 @@ export default {
   },
   data() {
     return {
-      recAddress: '测试用的收货地址',
-      total: '￥2293.60',
+      // todo 此处代码写的不好
+      recAddress: `${sessionStorage.getItem('recName')} ${sessionStorage.getItem('recAddress')} ${sessionStorage.getItem('recPhone')} ${sessionStorage.getItem('postcode')}`,
+      total: sessionStorage.getItem('cost'),
       etaTime: '预计08月08日送达',
     };
   },
-  methods: {},
+  methods: {
+    priceFix(val) {
+      return PriceFix(val);
+    },
+
+    toOrdersPage() {
+      this.$router.push('/order');
+    },
+  },
   computed: {},
   watch: {},
 };
@@ -127,6 +143,10 @@ export default {
         width: 214px;
         color: $color-text-primary;
         margin-bottom: 10px;
+      }
+
+      &--fix {
+        width: 500px;
       }
 
       &--money {

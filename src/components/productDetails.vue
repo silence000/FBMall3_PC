@@ -159,7 +159,6 @@ export default {
     },
 
     onClickBuy() {
-      console.log('点击了购买');
       // 判断用户是否登录
       if (!this.$store.state.username) { // this.$store.state.username为null/undefined时进入
         // 将当前商品页的商品Id存入登录页面的Vuex
@@ -167,11 +166,22 @@ export default {
         this.$router.push('/login');
         return;
       }
-      console.log(this);
+      // 执行加入购物车逻辑
+      const payload = {
+        pid: this.$route.query.id,
+        num: this.buyNum,
+      };
+      this.$store.dispatch('product/insertProductInCart', payload)
+        .then((data) => {
+          pageNoticeResProcess(data, this.$route.query.id, '成功加入购物车', '加入购物车失败，请重试');
+          // 跳转到购物车
+          if (data.code === 1) {
+            this.$router.push('/cart');
+          }
+        });
     },
 
     onClickPutInCart() {
-      console.log('点击了加入购物车');
       // 判断用户是否登录
       if (!this.$store.state.username) {
         // 将当前商品页的商品Id存入登录页面的Vuex

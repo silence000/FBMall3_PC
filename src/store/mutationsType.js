@@ -55,3 +55,11 @@ export const alterOrdersResData = 'alterOrdersResData';
 export const alterLoadingOrders = 'alterLoadingOrders';
 export const alterOrderItemData = 'alterOrderItemData';
 export const alterOrderDetails = 'alterOrderDetails';
+export const alterLoadingTables = 'alterLoadingTables';
+/*
+* review.js
+* */
+export const alterProductInfo = 'alterProductInfo';
+export const alterProductReviewsData = 'alterProductReviewsData';
+export const alterProductImgUrl = 'alterProductImgUrl';
+export const alterLoadingImg = 'alterLoadingImg';

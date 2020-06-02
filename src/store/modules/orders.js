@@ -4,6 +4,7 @@ import {
   alterLoadingOrders,
   alterOrderItemData,
   alterOrderDetails,
+  alterLoadingTables,
 } from '../mutationsType';
 import {
   getOrders,
@@ -26,6 +27,7 @@ export default {
     orderItemData: [], // 订单中商品信息
     orderDetails: {}, // 订单详情
     loadingOrders: false,
+    loadingTables: false,
   },
 
   getters: { // 过滤器
@@ -99,6 +101,10 @@ export default {
     [alterOrderDetails](state, payload) {
       state.orderDetails = payload;
     },
+
+    [alterLoadingTables](state, payload) {
+      state.loadingTables = payload;
+    },
   },
 
   actions: { // 用于触发事件, 执行异步操作, 触发mutations, 去更新state
@@ -113,7 +119,7 @@ export default {
       return vuexResProcess({ commit }, `${[alterOrdersResData]}`, data, error);
     },
 
-    async getOneOrder({ commit }, payload) {
+    async getOneOrder({ commit }, payload) { // 获取某个订单的详情
       const params = new URLSearchParams();
       params.append('oid', payload);
       const { data, error } = await getOneOrder(params);

@@ -137,7 +137,7 @@ export default {
               this.$router.push('/login');
             }, 500);
           }
-          if (typeof (data.code) !== 'undefined') {
+          if (typeof (data.code) === 'undefined') {
             this.username = '';
             this.$message.error(`注册失败：${data.msg}`);
           }

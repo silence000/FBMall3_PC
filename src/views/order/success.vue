@@ -11,6 +11,7 @@
             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
           </span>
           <span class="successDiv__title--text">交易已经成功，卖家将收到您的货款。</span>
+          <p @click="toOrders" class="successDiv__title--link"> 返回我的订单 </p>
         </div>
         <br><br><br><br><br>
       </div>
@@ -40,7 +41,11 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    toOrders() {
+      this.$router.push('/order');
+    },
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -78,6 +83,14 @@ export default {
       font-size: 14px;
       font-weight: 700;
       color: $color-text-primary;
+    }
+
+    &__title--link {
+      font-size: 14px;
+      &:hover {
+        cursor: pointer;
+        color: $color-primary;
+      }
     }
   }
 </style>

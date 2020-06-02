@@ -43,7 +43,7 @@
               <div class="productDetails" v-show="productDetails">
                 <div class="productDetails__title">产品参数</div>
                 <div class="productDetails__content">
-                  <span v-for="item in filterProductExtra" :key="item.descKey">
+                  <span v-for="item in productExtra" :key="item.descKey">
                     <span class="productDetails__item">
                       <span class="productDetails__item--key" v-text="item.descKey"></span>
                       <span class="productDetails__item--value" v-text="item.descValue"></span>
@@ -53,7 +53,7 @@
 
                 <br>
                 <div class="productDetails__images">
-                  <div v-for="item in filterImageExtraUrl" :key="item.id">
+                  <div v-for="item in imageExtraUrl" :key="item.id">
                     <el-image :src="item.link"></el-image>
                   </div>
                 </div>
@@ -108,11 +108,11 @@ export default {
   },
   mounted() {},
   computed: {
-    filterProductExtra() {
+    productExtra() {
       return this.$store.getters['product/filterProductExtra'];
     },
 
-    filterImageExtraUrl() {
+    imageExtraUrl() {
       return this.$store.getters['product/filterImageExtraUrl'];
     },
 
