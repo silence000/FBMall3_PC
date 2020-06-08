@@ -40,7 +40,7 @@
 
               <div class="loginExtra">
                 <div class="loginExtra__left">
-                  <el-link :underline="false">忘记登录密码</el-link>
+                  <el-link :underline="false" @click="test()">忘记登录密码</el-link>
                 </div>
                 <div class="loginExtra__right">
                   <el-link :underline="false" @click="jmp('/register')">免费注册</el-link>
@@ -111,6 +111,10 @@ export default {
   },
   watch: {},
   methods: {
+    test() {
+      this.$message('该功能没有做QAQ');
+    },
+
     jmp(val) {
       SwitchRouter(this.$route.path, val);
     },

@@ -21,8 +21,8 @@
               ></div>
 
               <div class="shopInfo__buttonGroup">
-                <el-button type="primary" plain size="mini">进店逛逛</el-button>
-                <el-button type="primary" size="mini">收藏店铺</el-button>
+                <el-button type="primary" plain size="mini" @click="test">进店逛逛</el-button>
+                <el-button type="primary" size="mini" @click="test">收藏店铺</el-button>
               </div>
             </div>
           </div>
@@ -129,6 +129,10 @@ export default {
     };
   },
   methods: {
+    test() {
+      this.$message('该功能没有做QAQ');
+    },
+
     handleSelect(key) {
       if (key === '1') {
         this.activeIndex = '1';

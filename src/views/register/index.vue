@@ -136,8 +136,9 @@ export default {
             setTimeout(() => {
               this.$router.push('/login');
             }, 500);
+            return;
           }
-          if (typeof (data.code) === 'undefined') {
+          if (typeof (data.code) === 'number') {
             this.username = '';
             this.$message.error(`注册失败：${data.msg}`);
           }
